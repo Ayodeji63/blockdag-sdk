@@ -11,6 +11,7 @@ import type {
   RequestPaymasterTokenQuoteRequest,
   RequestPaymasterTokenQuoteResponse,
 } from "../actions/types";
+import { AbstractTransport } from "../abstractTransport";
 
 export type AbstractRpcSchema = [
   {
@@ -35,6 +36,26 @@ export type AbstractRpcSchema = [
     ReturnType: RequestPaymasterTokenQuoteResponse;
   },
 ];
+
+export type ClientWithAlchemyMethods = BundlerClient<AbstractTransport> & {
+  request: BundlerClient<AbstractTransport>["request"] &
+    {
+      request(args: {
+        method: "alchemy_simulateUserOperationAssetChanges";
+        params: SimulateUserOperationAssetChangesRequest;
+      }): Promise<SimulateUserOperationAssetChangesResponse>;
+
+      request(args: {
+        method: "rundler_maxPriorityFeePerGas";
+        params: [];
+      }): Promise<UserOperationRequest["maxPriorityFeePerGas"]>;
+
+      request(args: {
+        method: "alchemy_requestGasAndPaymasterAndData";
+        params: RequestGasAndPaymasterAndDataRequest;
+      }): Promise<RequestGasAndPaymasterAndDataResponse>;
+    }["request"];
+};
 
 // export type ClientWithAbstractMethods = BundlerClient<AlchemyTransport> & {
 
