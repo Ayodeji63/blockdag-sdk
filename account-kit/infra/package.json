@@ -1,6 +1,6 @@
 {
   "name": "@account-kit/infra",
-  "version": "4.77.1",
+  "version": "0.0.1",
   "description": "adapters for @aa-sdk/core for interacting",
   "author": "Abstract Labs",
   "license": "MIT",

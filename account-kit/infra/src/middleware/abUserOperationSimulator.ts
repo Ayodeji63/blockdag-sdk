@@ -10,7 +10,7 @@ import type { AbstractTransport } from "../abstractTransport";
  * A middleware function to be used during simulation of user operations which leverages Absract's RPC uo simulation method.
  */
 
-export function alchemyUserOperationSimulator<
+export function abstractUserOperationSimulator<
   TContext extends UserOperationContext | undefined =
     | UserOperationContext
     | undefined,

@@ -238,7 +238,7 @@ describe("AbstractSmartAccountClient", () => {
       if (!config.chain) {
         expect(() => {
           throw new ChainNotFoundError();
-        });
+        });=
       }
     });
   });
