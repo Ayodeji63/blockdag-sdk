@@ -1,6 +1,7 @@
 {
-  // "extends": "typescript-template/base.json",
   "compilerOptions": {
-    "jsx": "preserve"
+    "strict": true,
+    // OR if you don't want full strict mode yet:
+    "strictNullChecks": true
   }
 }
