@@ -228,6 +228,28 @@ importers:
         specifier: '*'
         version: 1.0.7
 
+  dag-kit/logging/package:
+    dependencies:
+      '@segment/analytics-next':
+        specifier: 1.74.0
+        version: 1.74.0(encoding@0.1.13)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      uuid:
+        specifier: ^11.0.2
+        version: 11.1.0
+    devDependencies:
+      '@types/jsdom':
+        specifier: ^21.1.7
+        version: 21.1.7
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      typescript-template:
+        specifier: '*'
+        version: 1.0.7
+
   dag-kit/plugingen:
     dependencies:
       '@aa-sdk/core':
@@ -279,6 +301,15 @@ importers:
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4
+      abitype:
+        specifier: ^1.2.1
+        version: 1.2.1(typescript@5.9.3)(zod@3.25.76)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      dotenv-expand:
+        specifier: ^12.0.3
+        version: 12.0.3
       typescript-template:
         specifier: '*'
         version: 1.0.7
@@ -314,7 +345,11 @@ importers:
         specifier: '*'
         version: 1.0.7
 
-  dag-kit/test-page: {}
+  dag-kit/test-page:
+    dependencies:
+      '@dag-kit/logging':
+        specifier: ^1.0.0
+        version: 1.0.0(encoding@0.1.13)
 
   dag-kit/wallet-client:
     dependencies:
@@ -1256,6 +1291,9 @@ packages:
   '@csstools/css-tokenizer@3.0.4':
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
+
+  '@dag-kit/logging@1.0.0':
+    resolution: {integrity: sha512-PTU4usfum9b0svXMxg7yO+KgCmqneeVnwGhhlBPvcJQNwyBCR4NLKkEBX2RqeUuXRQmji4eZajTTZI+adBbMNg==}
 
   '@emnapi/core@1.7.1':
     resolution: {integrity: sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg==}
@@ -3364,6 +3402,17 @@ packages:
       zod:
         optional: true
 
+  abitype@1.2.1:
+    resolution: {integrity: sha512-AhkAWBE5QqzSuaPi6B9w5scl5739iBknQdFFAbY/CybASOBVWtVmPavUYW1OrDRX/iZWB/Je80xhJMZz2G4G1Q==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+      zod: ^3.22.0 || ^4.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      zod:
+        optional: true
+
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
@@ -4361,6 +4410,10 @@ packages:
 
   dotenv-expand@11.0.7:
     resolution: {integrity: sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA==}
+    engines: {node: '>=12'}
+
+  dotenv-expand@12.0.3:
+    resolution: {integrity: sha512-uc47g4b+4k/M/SeaW1y4OApx+mtLWl92l5LMPP0GNXctZqELk+YGgOPIIC5elYmUH4OuoK3JLhuRUYegeySiFA==}
     engines: {node: '>=12'}
 
   dotenv@16.4.7:
@@ -10397,6 +10450,14 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
+  '@dag-kit/logging@1.0.0(encoding@0.1.13)':
+    dependencies:
+      '@segment/analytics-next': 1.74.0(encoding@0.1.13)
+      dotenv: 17.2.3
+      uuid: 11.1.0
+    transitivePeerDependencies:
+      - encoding
+
   '@emnapi/core@1.7.1':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
@@ -13337,6 +13398,11 @@ snapshots:
       typescript: 5.9.3
       zod: 3.25.76
 
+  abitype@1.2.1(typescript@5.9.3)(zod@3.25.76):
+    optionalDependencies:
+      typescript: 5.9.3
+      zod: 3.25.76
+
   abort-controller@3.0.0:
     dependencies:
       event-target-shim: 5.0.1
@@ -14438,6 +14504,10 @@ snapshots:
   dotenv-expand@10.0.0: {}
 
   dotenv-expand@11.0.7:
+    dependencies:
+      dotenv: 16.6.1
+
+  dotenv-expand@12.0.3:
     dependencies:
       dotenv: 16.6.1
 

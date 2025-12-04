@@ -34,14 +34,6 @@
   "bin": {
     "plugingen": "./dist/esm/cli.js"
   },
-  "scripts": {
-    "prebuild": "tsx ./inject-version.ts",
-    "build": "yarn clean && yarn build:esm && yarn build:types",
-    "build:esm": "tsc --project tsconfig.build.json --outDir ./dist/esm",
-    "build:types": "tsc --project tsconfig.build.json --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
-    "postbuild": "chmod +x ./dist/esm/cli.js",
-    "clean": "rm -rf ./dist"
-  },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "abitype": "^1.2.1",
@@ -79,5 +71,13 @@
   },
   "peerDependencies": {
     "viem": "^2.29.2"
+  },
+  "scripts": {
+    "prebuild": "tsx ./inject-version.ts",
+    "build": "yarn clean && yarn build:esm && yarn build:types",
+    "build:esm": "tsc --project tsconfig.build.json --outDir ./dist/esm",
+    "build:types": "tsc --project tsconfig.build.json --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
+    "postbuild": "chmod +x ./dist/esm/cli.js",
+    "clean": "rm -rf ./dist"
   }
 }

@@ -1,8 +1,8 @@
 {
-  "name": "@account-kit/wallet-client",
-  "version": "4.77.1",
-  "description": "Wallet Client for Alchemy Account Kit",
-  "author": "Alchemy",
+  "name": "@dag-kit/wallet-client",
+  "version": "1.0.0",
+  "description": "Wallet Client for Abstract Account Kit",
+  "author": "Abstract",
   "license": "MIT",
   "private": false,
   "type": "module",
