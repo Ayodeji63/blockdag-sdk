@@ -1,4 +1,4 @@
-import { createLogger } from "@account-kit/logging";
+import { createLogger } from "@dag-kit/logging";
 import type { Address } from "viem";
 import { VERSION } from "./version.js";
 

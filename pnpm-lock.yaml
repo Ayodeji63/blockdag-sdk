@@ -188,6 +188,9 @@ importers:
       '@aa-sdk/core':
         specifier: ^4.77.1
         version: 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@dag-kit/logging':
+        specifier: ^1.0.0
+        version: 1.0.0(encoding@0.1.13)
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
@@ -314,6 +317,70 @@ importers:
         specifier: '*'
         version: 1.0.7
 
+  dag-kit/plugingen/package:
+    dependencies:
+      '@aa-sdk/core':
+        specifier: ^4.77.1
+        version: 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      bundle-require:
+        specifier: ^4.0.2
+        version: 4.2.1(esbuild@0.20.2)
+      cac:
+        specifier: ^6.7.14
+        version: 6.7.14
+      change-case:
+        specifier: ^5.4.3
+        version: 5.4.4
+      chokidar:
+        specifier: ^3.6.0
+        version: 3.6.0
+      dedent:
+        specifier: ^1.5.1
+        version: 1.5.3(babel-plugin-macros@3.1.0)
+      esbuild:
+        specifier: ^0.20.1
+        version: 0.20.2
+      find-up:
+        specifier: ^7.0.0
+        version: 7.0.0
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.3.2
+      ora:
+        specifier: ^8.0.1
+        version: 8.2.0
+      pathe:
+        specifier: ^1.1.2
+        version: 1.1.2
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.1.1
+      prettier:
+        specifier: 3.3.3
+        version: 3.3.3
+      viem:
+        specifier: 2.33.3
+        version: 2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      abitype:
+        specifier: ^1.2.1
+        version: 1.2.1(typescript@5.9.3)(zod@3.25.76)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      dotenv-expand:
+        specifier: ^12.0.3
+        version: 12.0.3
+      typescript-template:
+        specifier: '*'
+        version: 1.0.7
+
   dag-kit/smart-contracts:
     dependencies:
       '@aa-sdk/core':
@@ -329,9 +396,9 @@ importers:
         specifier: ^0.0.10
         version: 0.0.10
     devDependencies:
-      '@account-kit/plugingen':
-        specifier: ^4.77.1
-        version: 4.80.0(babel-plugin-macros@3.1.0)(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@dag-kit/plugingen':
+        specifier: 1.0.0
+        version: 1.0.0(babel-plugin-macros@3.1.0)(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       change-case:
         specifier: ^5.1.2
         version: 5.4.4
@@ -441,12 +508,6 @@ packages:
 
   '@account-kit/logging@4.81.0':
     resolution: {integrity: sha512-kzX1E+JHYsrp9MQdFub8ANZgH10xJy+aewkiHK1eFgDuNlQ02Q8CYBldOrKIlZLJ+sZQ/d06eWiPMl+Oe7LktA==}
-
-  '@account-kit/plugingen@4.80.0':
-    resolution: {integrity: sha512-6SBmGaGuNCyd9NIYDFlh74O+KKZ37hlvVO39U40jo5/rzRcKcbpe2dqnLft2cxO/jnZt1qXGl1j1OBAGig7xvw==}
-    hasBin: true
-    peerDependencies:
-      viem: 2.33.3
 
   '@account-kit/react-native-signer@4.81.0':
     resolution: {integrity: sha512-raHEgOu5vITxdQ4SKJu31Q2XJoeKhsKbX1n87PBpqo0CD9P3ZWuRShG1zsb+xUxs/wzwTlWXbCaS1zelBhYhSg==}
@@ -1294,6 +1355,12 @@ packages:
 
   '@dag-kit/logging@1.0.0':
     resolution: {integrity: sha512-PTU4usfum9b0svXMxg7yO+KgCmqneeVnwGhhlBPvcJQNwyBCR4NLKkEBX2RqeUuXRQmji4eZajTTZI+adBbMNg==}
+
+  '@dag-kit/plugingen@1.0.0':
+    resolution: {integrity: sha512-k3BHxJdRLiM3YEn6I/znwIQczZ+2+n4pn/9LhFWK57Er3CzsnEX882HOaZkn8AzqgO1GJWeGFrKfh/sR+le+BQ==}
+    hasBin: true
+    peerDependencies:
+      viem: 2.33.3
 
   '@emnapi/core@1.7.1':
     resolution: {integrity: sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg==}
@@ -9272,27 +9339,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@account-kit/plugingen@4.80.0(babel-plugin-macros@3.1.0)(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
-    dependencies:
-      '@aa-sdk/core': 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      bundle-require: 4.2.1(esbuild@0.20.2)
-      cac: 6.7.14
-      change-case: 5.4.4
-      chokidar: 3.6.0
-      dedent: 1.5.3(babel-plugin-macros@3.1.0)
-      esbuild: 0.20.2
-      find-up: 7.0.0
-      fs-extra: 11.3.2
-      ora: 8.2.0
-      pathe: 1.1.2
-      picocolors: 1.1.1
-      prettier: 3.3.3
-      viem: 2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - typescript
-
   '@account-kit/react-native-signer@4.81.0(bufferutil@4.0.9)(encoding@0.1.13)(react-native-get-random-values@1.11.0(react-native@0.82.1(@babel/core@7.28.5)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(react-native-inappbrowser-reborn@3.7.0(react-native@0.82.1(@babel/core@7.28.5)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(react-native-mmkv@3.3.3(react-native@0.82.1(@babel/core@7.28.5)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1))(react-native-passkey@3.3.2(react-native@0.82.1(@babel/core@7.28.5)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1))(react-native@0.82.1(@babel/core@7.28.5)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)':
     dependencies:
       '@aa-sdk/core': 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -10457,6 +10503,27 @@ snapshots:
       uuid: 11.1.0
     transitivePeerDependencies:
       - encoding
+
+  '@dag-kit/plugingen@1.0.0(babel-plugin-macros@3.1.0)(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+    dependencies:
+      '@aa-sdk/core': 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      bundle-require: 4.2.1(esbuild@0.20.2)
+      cac: 6.7.14
+      change-case: 5.4.4
+      chokidar: 3.6.0
+      dedent: 1.5.3(babel-plugin-macros@3.1.0)
+      esbuild: 0.20.2
+      find-up: 7.0.0
+      fs-extra: 11.3.2
+      ora: 8.2.0
+      pathe: 1.1.2
+      picocolors: 1.1.1
+      prettier: 3.3.3
+      viem: 2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - typescript
 
   '@emnapi/core@1.7.1':
     dependencies:
@@ -18367,7 +18434,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.0.8(typescript@5.9.3)(zod@3.25.76)
+      abitype: 1.2.1(typescript@5.9.3)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.9.3
@@ -18382,7 +18449,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.0.8(typescript@5.9.3)(zod@3.25.76)
+      abitype: 1.2.1(typescript@5.9.3)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 5.9.3

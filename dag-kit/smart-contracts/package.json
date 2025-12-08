@@ -1,8 +1,8 @@
 {
-  "name": "@account-kit/smart-contracts",
+  "name": "@dag-kit/smart-contracts",
   "version": "4.77.1",
-  "description": "aa-sdk compatible interfaces for Alchemy Smart Accounts",
-  "author": "Alchemy",
+  "description": "aa-sdk compatible interfaces for Abstract Smart Accounts",
+  "author": "Abstract",
   "license": "MIT",
   "private": false,
   "type": "module",
@@ -51,7 +51,7 @@
     "test:run": "vitest run"
   },
   "devDependencies": {
-    "@account-kit/plugingen": "^4.77.1",
+    "@dag-kit/plugingen": "1.0.0",
     "change-case": "^5.1.2",
     "dedent": "^1.5.1",
     "dotenv": "^16.3.1",
@@ -63,12 +63,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alchemyplatform/aa-sdk.git"
+    "url": "git+https://github.com:Ayodeji63/blockdag-sdk.git.git"
   },
   "bugs": {
-    "url": "https://github.com/alchemyplatform/aa-sdk/issues"
+    "url": "https://github.com:Ayodeji63/blockdag-sdk/issues"
   },
-  "homepage": "https://github.com/alchemyplatform/aa-sdk#readme",
+  "homepage": "https://github.com:Ayodeji63/blockdag-sdk#readme",
   "gitHead": "ee46e8bb857de3b631044fa70714ea706d9e317d",
   "dependencies": {
     "@aa-sdk/core": "^4.77.1",

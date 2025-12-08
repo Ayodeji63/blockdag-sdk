@@ -68,7 +68,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alchemyplatform/aa-sdk.git"
+    "url": "git+https://github.com:Ayodeji63/blockdag-sdk.git"
   },
   "bugs": {
     "url": "https://github.com/alchemyplatform/aa-sdk/issues"

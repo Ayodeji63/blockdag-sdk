@@ -55,12 +55,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alchemyplatform/aa-sdk.git"
+    "url": "git+https://github.com/Ayodeji63/blockdag-sdk.git.git"
   },
   "bugs": {
-    "url": "https://github.com/alchemyplatform/aa-sdk/issues"
+    "url": "https://github.com/Ayodeji63/blockdag-sdk.git/issues"
   },
-  "homepage": "https://github.com/alchemyplatform/aa-sdk#readme",
+  "homepage": "https://github.com/Ayodeji63/blockdag-sdk.git#readme",
   "dependencies": {
     "@aa-sdk/core": "^4.77.1",
     "bundle-require": "^4.0.2",
