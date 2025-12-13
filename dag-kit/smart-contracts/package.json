@@ -1,6 +1,6 @@
 {
   "name": "@dag-kit/smart-contracts",
-  "version": "4.77.1",
+  "version": "1.0.0",
   "description": "aa-sdk compatible interfaces for Abstract Smart Accounts",
   "author": "Abstract",
   "license": "MIT",
@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@dag-kit/plugingen": "1.0.0",
+    "@types/node": "^24.0.11",
     "change-case": "^5.1.2",
     "dedent": "^1.5.1",
     "dotenv": "^16.3.1",

@@ -8,7 +8,8 @@ import {
   type CreateLightAccountParams,
   type LightAccount,
   type LightAccountClientActions,
-} from "@account-kit/smart-contracts";
+} from "../../index";
+
 import { type Chain } from "viem";
 
 export type AlchemyLightAccountClientConfig<
@@ -22,7 +23,7 @@ export type AlchemyLightAccountClientConfig<
 export async function createLightAccountAlchemyClient<
   TSigner extends SmartAccountSigner = SmartAccountSigner,
 >(
-  params: AlchemyLightAccountClientConfig<TSigner>,
+  params: AlchemyLightAccountClientConfig<TSigner>
 ): Promise<
   AlchemySmartAccountClient<
     Chain | undefined,

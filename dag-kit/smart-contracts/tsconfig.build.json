@@ -1,20 +1,24 @@
 {
-  "extends": "typescript-template/build.json",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/esm",
+    "rootDir": "./src",
+
+    // CRITICAL FIXES:
+    "target": "ES2020", // Enables BigInt (100n) support
+    "module": "esnext",
+    "moduleResolution": "node", // Ensures packages like @account-kit are found
+    "skipLibCheck": true, // Ignores the errors inside node_modules/ox
+    "types": ["node"],
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules",
-    "**/*/__tests__",
-    "**/*/*.test.ts",
-    "**/*/*.test-d.ts",
-    "**/*/*.e2e.test.ts",
-    "vitest.config.ts",
-    "vitest.config.e2e.ts"
-  ],
-  "include": ["src", "plugindefs", "experimental"],
-  "compilerOptions": {
-    "sourceMap": true,
-    "paths": {
-      "@account-kit/smart-contracts": ["./src/index.ts"],
-      "@account-kit/smart-contracts/experimental": ["./src/ma-v2/index.ts"]
-    }
-  }
+    "dist",
+    "**/*.test.ts",
+    "**/*.test-d.ts",
+    "**/*.spec.ts",
+    "src/**/e2e-tests/**/*"
+  ]
 }

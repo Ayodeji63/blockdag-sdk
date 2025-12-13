@@ -12,7 +12,7 @@ import {
   createLightAccount,
   type CreateLightAccountParams,
   type LightAccount,
-} from "@account-kit/smart-contracts";
+} from "../../index";
 import {
   lightAccountClientActions,
   type LightAccountClientActions,
@@ -43,7 +43,7 @@ export function createLightAccountClient<
 >(
   params: AlchemyLightAccountClientConfig<TSigner> & {
     transport: AlchemyTransport;
-  },
+  }
 ): Promise<
   AlchemySmartAccountClient<
     Chain | undefined,
@@ -57,7 +57,7 @@ export function createLightAccountClient<
   TTransport extends Transport = Transport,
 >(
   args: CreateLightAccountClientParams<TTransport, TChain, TSigner> &
-    NotType<TTransport, AlchemyTransport>,
+    NotType<TTransport, AlchemyTransport>
 ): Promise<
   SmartAccountClient<
     CustomTransport,
@@ -104,7 +104,7 @@ export function createLightAccountClient<
  * @returns {Promise<SmartAccountClient>} A promise that resolves to a `SmartAccountClient` object containing the created account information and methods
  */
 export async function createLightAccountClient(
-  params: CreateLightAccountClientParams,
+  params: CreateLightAccountClientParams
 ): Promise<SmartAccountClient | AlchemySmartAccountClient> {
   const { transport, chain } = params;
 
