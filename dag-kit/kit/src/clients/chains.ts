@@ -1,5 +1,5 @@
 import { defineChain } from "viem";
-
+import { arbitrumSepolia } from "viem/chains";
 const awakening_ = defineChain({
   id: 1043,
   name: "Awakening Testnet",
@@ -13,4 +13,9 @@ const awakening_ = defineChain({
 export const awakening = {
   bundler_rpc: "http://0.0.0.0:3000/",
   chain_config: awakening_,
+};
+
+export const arbitrumSep = {
+  bundler_rpc: "http://0.0.0.0:3001/",
+  chain_config: arbitrumSepolia,
 };

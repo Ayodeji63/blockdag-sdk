@@ -6,3 +6,5 @@ export {
   SendUserOperationParams,
   UserOperationReceipt,
 } from "../clients/types";
+
+export { awakening, arbitrumSep } from "../clients/chains";
