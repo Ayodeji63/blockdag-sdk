@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+
+    // 👇 CHANGE THESE TWO LINES TO 'ES2022'
+    "lib": ["ES2022", "DOM"],
+    "target": "ES2022",
+
+    "module": "ES2020",
+
+    // 👇 OPTIONAL: If you are using a recent TypeScript version,
+    // changing this to "bundler" often resolves path issues with modern libs.
+    // If "bundler" gives an error, switch back to "node".
+    "moduleResolution": "bundler",
+
+    "outDir": "./dist/esm"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

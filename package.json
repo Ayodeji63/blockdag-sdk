@@ -9,7 +9,7 @@
   "workspaces": {
     "packages": [
       "aa-sdk/*",
-      "account-kit/*",
+      "dag-kit/*",
       "templates/*",
       "examples/*",
       "account-kit/rn-signer/example",
