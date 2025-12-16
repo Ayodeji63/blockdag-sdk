@@ -1,0 +1,19 @@
+{
+  "name": "test-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "@dag-kit/kit": "file:../kit/dag-kit-kit-1.0.2.tgz",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.3",
+    "viem": "2.33.3"
+  }
+}

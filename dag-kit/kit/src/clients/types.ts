@@ -17,6 +17,7 @@ export interface DagAAConfig {
   bundlerUrl: string;
   factoryAddress: Address;
   entryPointAddress?: Address;
+  paymasterUrl?: string;
 }
 
 export interface SmartAccountConfig {

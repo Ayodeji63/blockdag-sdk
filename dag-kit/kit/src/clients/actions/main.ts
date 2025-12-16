@@ -37,6 +37,7 @@ export class DagAAClient {
   private walletClient: ReturnType<typeof createWalletClient>;
   private bundlerClient: ReturnType<typeof createPimlicoClient> | null = null;
   private smartAccount: any | null = null;
+  private paymasterClient: any | null = null;
   private smartAccountClient: ReturnType<
     typeof createSmartAccountClient
   > | null = null;
@@ -56,8 +57,112 @@ export class DagAAClient {
       chain: config.chain,
       transport: http(config.rpcUrl),
     });
-  }
 
+    // Initialize paymaster client if URL provided
+    if (config.paymasterUrl) {
+      this.paymasterClient = this.createPaymasterClient(config.paymasterUrl);
+    }
+  }
+  // ==============================================================================
+  // Paymaster Client (Fixed Serialization)
+  // ==============================================================================
+
+  private createPaymasterClient(paymasterUrl: string) {
+    // 1. Define a robust serializer that handles nested BigInts automatically
+    const stringify = (data: any) => {
+      return JSON.stringify(data, (_, value) =>
+        typeof value === "bigint" ? `0x${value.toString(16)}` : value
+      );
+    };
+
+    return {
+      /**
+       * Get paymaster stub data for gas estimation
+       */
+      async getPaymasterStubData(
+        userOp: any,
+        entryPoint: Address
+      ): Promise<any> {
+        try {
+          const response = await fetch(paymasterUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // 👇 Use the robust stringify helper
+            body: stringify({
+              jsonrpc: "2.0",
+              id: 1,
+              method: "pm_getPaymasterStubData",
+              params: [userOp, entryPoint, {}],
+            }),
+          });
+
+          const data = await response.json();
+          if (data.error) throw new Error(data.error.message);
+
+          return data.result;
+        } catch (error) {
+          console.warn("Failed to get paymaster stub data:", error);
+          // ⚠️ If this fails, the UserOp usually fails with AA21
+          return { paymasterAndData: "0x" };
+        }
+      },
+
+      /**
+       * Get paymaster data for actual transaction
+       */
+      async getPaymasterData(userOp: any, entryPoint: Address): Promise<any> {
+        try {
+          const response = await fetch(paymasterUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: stringify({
+              jsonrpc: "2.0",
+              id: 1,
+              method: "pm_getPaymasterData",
+              params: [userOp, entryPoint, {}],
+            }),
+          });
+
+          const data = await response.json();
+          if (data.error) throw new Error(data.error.message);
+
+          return data.result;
+        } catch (error) {
+          console.warn("Failed to get paymaster data:", error);
+          return null;
+        }
+      },
+
+      /**
+       * Sponsor user operation
+       */
+      async sponsorUserOperation(
+        userOp: any,
+        entryPoint: Address
+      ): Promise<any> {
+        try {
+          const response = await fetch(paymasterUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: stringify({
+              jsonrpc: "2.0",
+              id: 1,
+              method: "pm_sponsorUserOperation",
+              params: [userOp, entryPoint, {}],
+            }),
+          });
+
+          const data = await response.json();
+          if (data.error) throw new Error(data.error.message);
+
+          return data.result;
+        } catch (error) {
+          console.warn("Failed to sponsor user operation:", error);
+          throw error;
+        }
+      },
+    };
+  }
   // ==============================================================================
   // Smart Account Management
   // ==============================================================================
@@ -107,12 +212,84 @@ export class DagAAClient {
       },
     });
 
-    // Create smart account client
-    this.smartAccountClient = createSmartAccountClient({
+    // Create smart account client with optional paymaster
+    const clientConfig: any = {
       bundlerTransport: http(this.config.bundlerUrl),
       chain: this.config.chain,
       account: this.smartAccount,
-    });
+    };
+
+    // Add paymaster if configured
+    if (this.paymasterClient) {
+      clientConfig.paymaster = {
+        getPaymasterData: async (userOperation: any) => {
+          console.log("🎫 Requesting paymaster sponsorship...");
+          console.log("UserOp sender:", userOperation.sender);
+
+          try {
+            const result = await this.paymasterClient!.sponsorUserOperation(
+              userOperation,
+              this.config.entryPointAddress!
+            );
+
+            console.log("Paymaster result:", result);
+
+            if (result && result.paymasterAndData) {
+              console.log("✅ Paymaster sponsorship approved!");
+              console.log("PaymasterAndData:", result.paymasterAndData);
+              return {
+                paymasterAndData: result.paymasterAndData,
+                ...(result.preVerificationGas && {
+                  preVerificationGas: BigInt(result.preVerificationGas),
+                }),
+                ...(result.verificationGasLimit && {
+                  verificationGasLimit: BigInt(result.verificationGasLimit),
+                }),
+                ...(result.callGasLimit && {
+                  callGasLimit: BigInt(result.callGasLimit),
+                }),
+              };
+            } else {
+              console.error("❌ No paymasterAndData in response:", result);
+              throw new Error("No paymaster data returned");
+            }
+          } catch (error) {
+            console.error("❌ Paymaster sponsorship failed:", error);
+            throw error;
+          }
+        },
+
+        getPaymasterStubData: async (userOperation: any) => {
+          console.log("📝 Getting paymaster stub data for gas estimation...");
+
+          try {
+            const result = await this.paymasterClient!.getPaymasterStubData(
+              userOperation,
+              this.config.entryPointAddress!
+            );
+
+            console.log("Stub data result:", result);
+
+            if (result && result.paymasterAndData) {
+              console.log("✅ Got paymaster stub data");
+              return {
+                paymasterAndData: result.paymasterAndData,
+              };
+            }
+          } catch (error) {
+            console.warn("⚠️ Failed to get paymaster stub data:", error);
+          }
+
+          // Return default stub if fails
+          console.log("⚠️ Using default stub data");
+          return {
+            paymasterAndData: "0x",
+          };
+        },
+      };
+    }
+
+    this.smartAccountClient = createSmartAccountClient(clientConfig);
 
     console.log(`✅ Connected to smart account: ${this.smartAccount.address}`);
     return this.smartAccount.address;
@@ -192,9 +369,9 @@ export class DagAAClient {
       value = 0n,
       maxFeePerGas,
       maxPriorityFeePerGas,
-      callGasLimit = 150000n,
-      verificationGasLimit = 300000n,
-      preVerificationGas = 100000n,
+      callGasLimit,
+      verificationGasLimit,
+      preVerificationGas,
     } = params;
 
     // Get gas prices if not provided
@@ -219,7 +396,7 @@ export class DagAAClient {
       `  Gas: ${gasPrices.maxFeePerGas} / ${gasPrices.maxPriorityFeePerGas}`
     );
 
-    const userOpHash = await this.smartAccountClient.sendTransaction({
+    const txOptions: any = {
       calls: [
         {
           to: target,
@@ -229,10 +406,16 @@ export class DagAAClient {
       ],
       maxFeePerGas: gasPrices.maxFeePerGas,
       maxPriorityFeePerGas: gasPrices.maxPriorityFeePerGas,
-      callGasLimit,
-      verificationGasLimit,
-      preVerificationGas,
-    });
+    };
+
+    // Add optional gas limits if provided
+    if (callGasLimit) txOptions.callGasLimit = callGasLimit;
+    if (verificationGasLimit)
+      txOptions.verificationGasLimit = verificationGasLimit;
+    if (preVerificationGas) txOptions.preVerificationGas = preVerificationGas;
+
+    // Send transaction - paymaster is automatically called if configured
+    const userOpHash = await this.smartAccountClient.sendTransaction(txOptions);
 
     console.log(`✅ UserOperation sent: ${userOpHash}`);
     return userOpHash;
@@ -363,14 +546,3 @@ export function createDagAAClient(config: DagAAConfig): DagAAClient {
 export function parseDAG(amount: string): bigint {
   return parseEther(amount);
 }
-
-// ==============================================================================
-// Export Types
-// ==============================================================================
-
-// export type {
-//   DagAAConfig,
-//   SmartAccountConfig,
-//   SendUserOperationParams,
-//   UserOperationReceipt,
-// };
