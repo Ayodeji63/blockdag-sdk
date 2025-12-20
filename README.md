@@ -1,136 +1,137 @@
-# Turborepo starter
+# DAG AA SDK
 
-This Turborepo starter is maintained by the Turborepo core team.
+The **DAG AA SDK** is a powerful TypeScript library designed for interacting with Account Abstraction on BlockDAG networks. Built on top of `viem` and `permissionless.js`, it provides an intuitive interface for managing smart accounts, sending UserOperations, and integrating with Paymasters for gas sponsorship.
 
-## Using this example
+## 🚀 Features
 
-Run the following command:
+- **Smart Account Management**: Easily create or connect to existing Simple Smart Accounts.
+- **Bundler Integration**: Seamlessly send UserOperations via Pimlico or other compatible bundlers.
+- **Built-in Paymaster Support**: Automated gas sponsorship with robust handling of `BigInt` serialization.
+- **High-level Contract Interaction**: simplified `readContract` and `writeContract` methods.
+- **Batch Operations**: Support for executing multiple UserOperations in sequence.
+- **Developer Friendly**: Inspired by the Alchemy AA SDK for a familiar developer experience.
 
-```sh
-npx create-turbo@latest
-```
+---
 
-## What's inside?
+## 📦 Installation
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+```bash
+npm install @dag-kit/kit viem permissionless
+# or
+yarn add @dag-kit/kit viem permissionless
 
 ```
-cd my-turborepo
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+---
+
+# Links
+
+### Demo Video -> https://youtu.be/6pTiK-sjrSE
+
+### Smart Contract Address
+
+- [Factory Address](https://awakening.bdagscan.com/contractOverview/0x8FaB6DF00085eb05D5F2C1FA46a6E539587ae3f3)
+- [Paymaster Address](https://awakening.bdagscan.com/searchQuery/0x96d6F32EbfBBc53586Cb6468C13e3b678f817ba0)
+
+### Interaction Smart Contract Address (Shown In Demo Video)
+
+- [Tx-1](https://awakening.bdagscan.com/tx/0x1badc620a5ae2475d3a27eed1f51cf2f8e0e876090c1efb6224b631e6746a12e)
+
+- [Tx-2](https://awakening.bdagscan.com/tx/0x0e37da762ed29240316a8824de74412e4b96c5c740f143f09170686096d51407)
+
+---
+
+## 🛠 Quick Start
+
+### 1. Initialize the Client
+
+```typescript
+import { createDagAAClient, parseDAG } from "@dag-kit/kit";
+import { mainnet } from "viem/chains";
+
+const client = createDagAAClient({
+  chain: mainnet,
+  rpcUrl: "https://your-rpc-url.com",
+  bundlerUrl: "",
+  paymasterUrl: "", // Optional
+  factoryAddress: "0x...",
+});
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 2. Connect a Smart Account
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+You can connect using a private key. This will either locate your existing account or prepare a new one for deployment.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+```typescript
+const smartAccountAddress = await client.connectSmartAccount({
+  owner: "0x-your-private-key",
+});
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+console.log(`Smart Account Address: ${smartAccountAddress}`);
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 3. Send a Sponsored Transaction
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+If a `paymasterUrl` was provided during initialization, gas sponsorship is handled automatically.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+```typescript
+const txHash = await client.sendUserOperation({
+  target: "0xTargetAddress",
+  data: "0x...",
+  value: parseDAG("0.1"),
+});
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+console.log(`UserOp sent: ${txHash}`);
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+---
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## 📖 API Reference
 
+### Core Methods
+
+| Method                        | Description                                       |
+| ----------------------------- | ------------------------------------------------- |
+| `connectSmartAccount(config)` | Deploys or connects to a Simple Smart Account.    |
+| `sendUserOperation(params)`   | Signs and sends a UserOperation to the bundler.   |
+| `writeContract(params)`       | Encodes a contract call and sends it as a UserOp. |
+| `readContract(params)`        | Performs a standard constant call to a contract.  |
+| `getBalance()`                | Returns the native balance of the Smart Account.  |
+| `isDeployed()`                | Checks if the Smart Account contract is on-chain. |
+
+### Configuration Options
+
+The `DagAAConfig` object accepts:
+
+- `chain`: The Viem Chain object.
+- `rpcUrl`: Standard JSON-RPC endpoint.
+- `bundlerUrl`: The ERC-4337 Bundler endpoint.
+- `paymasterUrl` (Optional): The endpoint for gas sponsorship.
+- `entryPointAddress` (Optional): Defaults to EntryPoint v0.6.
+
+---
+
+## 🔐 Advanced Usage: Batch Operations
+
+You can execute multiple operations in a single flow:
+
+```typescript
+const hashes = await client.sendBatchUserOperations([
+  { target: "0xAddress1", value: parseDAG("0.05") },
+  { target: "0xAddress2", value: parseDAG("0.05") },
+]);
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+---
 
-## Useful Links
+## 🤝 Contributing
 
-Learn more about the power of Turborepo:
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
-# blockdag-sdk
+## 📄 License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+---
