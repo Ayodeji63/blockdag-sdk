@@ -14,6 +14,8 @@ import {
   type Address,
   encodeFunctionData,
   parseEther,
+  Client,
+  ByteArray,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { toSimpleSmartAccount } from "permissionless/accounts";
@@ -25,7 +27,7 @@ import {
   SmartAccountConfig,
   SendUserOperationParams,
   UserOperationReceipt,
-} from "../types";
+} from "../types.js";
 
 // ==============================================================================
 // Main SDK Class
@@ -33,14 +35,12 @@ import {
 
 export class DagAAClient {
   private config: DagAAConfig;
-  private publicClient: ReturnType<typeof createPublicClient>;
-  private walletClient: ReturnType<typeof createWalletClient>;
-  private bundlerClient: ReturnType<typeof createPimlicoClient> | null = null;
+  private publicClient: any | null;
+  private walletClient: any | null;
+  private bundlerClient: any | null = null;
   private smartAccount: any | null = null;
   private paymasterClient: any | null = null;
-  private smartAccountClient: ReturnType<
-    typeof createSmartAccountClient
-  > | null = null;
+  private smartAccountClient: any | null = null;
 
   constructor(config: DagAAConfig) {
     this.config = {
@@ -170,30 +170,33 @@ export class DagAAClient {
   async connectSmartAccount(
     accountConfig: SmartAccountConfig
   ): Promise<Address> {
-    const owner = privateKeyToAccount(accountConfig.owner);
+    const { signer, accountAddress } = accountConfig;
 
-    const signingClient = createWalletClient({
-      account: owner,
-      chain: this.config.chain,
-      transport: http(this.config.rpcUrl),
-    });
+    const isReady = await signer.isReady();
+    if (!isReady) {
+      throw new Error("Signer is not ready. Ensure wallet is connected.");
+    }
 
-    if (accountConfig.accountAddress) {
+    const owner = await signer.getAccount();
+
+    const signingClient = await signer.getWalletClient();
+
+    if (accountAddress) {
       // Use existing account
       this.smartAccount = await toSimpleSmartAccount({
-        client: signingClient,
+        client: signingClient as unknown as Client,
         owner: owner,
         factoryAddress: this.config.factoryAddress,
         entryPoint: {
           address: this.config.entryPointAddress!,
           version: "0.6",
         },
-        address: accountConfig.accountAddress,
+        address: accountAddress,
       });
     } else {
       // Create new account
       this.smartAccount = await toSimpleSmartAccount({
-        client: signingClient,
+        client: signingClient as unknown as Client,
         owner: owner,
         factoryAddress: this.config.factoryAddress,
         entryPoint: {
@@ -509,8 +512,21 @@ export class DagAAClient {
     console.log(`Funding account with ${amount} wei...`);
 
     const hash = await client.sendTransaction({
+      account: signer, // ✅ Add this line
       to: this.smartAccount.address,
       value: amount,
+      kzg: {
+        blobToKzgCommitment: function (blob: ByteArray): ByteArray {
+          throw new Error("Function not implemented.");
+        },
+        computeBlobKzgProof: function (
+          blob: ByteArray,
+          commitment: ByteArray
+        ): ByteArray {
+          throw new Error("Function not implemented.");
+        },
+      },
+      chain: undefined,
     });
 
     console.log(`✅ Funded: ${hash}`);

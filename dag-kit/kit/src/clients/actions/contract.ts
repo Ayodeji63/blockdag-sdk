@@ -39,4 +39,4 @@ export const abi = [
     stateMutability: "view",
     type: "function",
   },
-];
+] as const;

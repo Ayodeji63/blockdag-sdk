@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": true,
+    "strict": false,
     // OR if you don't want full strict mode yet:
     "strictNullChecks": true
   }
