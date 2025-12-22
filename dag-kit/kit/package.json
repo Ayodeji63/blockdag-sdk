@@ -44,7 +44,7 @@
     "test:e2e": "bun test ./src/**/*.e2e.test.*"
   },
   "dependencies": {
-    "@dag-kit/signer": "../signer/dag-kit-signer-1.0.0.tgz",
+    "@dag-kit/signer": "^1.0.0",
     "@privy-io/react-auth": "^3.9.1",
     "@privy-io/wagmi-connector": "^0.1.13",
     "@turnkey/react-wallet-kit": "^1.7.1",

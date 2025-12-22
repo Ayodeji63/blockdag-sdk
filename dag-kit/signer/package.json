@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@aa-sdk/core": "^4.77.1",
-    "@dag-kit/signer": "file:dag-kit-signer-1.0.0.tgz",
+    "@dag-kit/signer": "^1.0.0",
     "@noble/curves": "^1.9.2",
     "@noble/hashes": "1.7.1",
     "@noble/secp256k1": "^2.3.0",
