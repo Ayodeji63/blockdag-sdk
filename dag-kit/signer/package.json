@@ -36,7 +36,8 @@
     "build:types": "tsc --project tsconfig.build.json --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
     "clean": "rm -rf ./dist",
     "test": "vitest --passWithNoTests",
-    "test:run": "vitest run --passWithNoTests"
+    "test:run": "vitest run --passWithNoTests",
+    "release": "pnpm publish --access public"
   },
   "devDependencies": {
     "@tanstack/react-query": "^5.28.9",
