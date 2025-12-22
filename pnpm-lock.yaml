@@ -528,6 +528,9 @@ importers:
       '@aa-sdk/core':
         specifier: ^4.77.1
         version: 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@dag-kit/signer':
+        specifier: file:dag-kit-signer-1.0.0.tgz
+        version: file:dag-kit/signer/dag-kit-signer-1.0.0.tgz(@types/react@18.3.22)(bufferutil@4.0.9)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@noble/curves':
         specifier: ^1.9.2
         version: 1.9.7
@@ -12746,6 +12749,32 @@ snapshots:
       viem: 2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       zod: 3.25.76
       zustand: 5.0.9(@types/react@18.3.22)(react@18.3.1)(use-sync-external-store@1.2.0(react@18.3.1))
+    transitivePeerDependencies:
+      - '@types/react'
+      - bufferutil
+      - encoding
+      - immer
+      - react
+      - typescript
+      - use-sync-external-store
+      - utf-8-validate
+
+  '@dag-kit/signer@file:dag-kit/signer/dag-kit-signer-1.0.0.tgz(@types/react@18.3.22)(bufferutil@4.0.9)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+    dependencies:
+      '@aa-sdk/core': 4.81.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.7.1
+      '@noble/secp256k1': 2.3.0
+      '@solana/web3.js': 1.98.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@turnkey/http': 3.16.0(encoding@0.1.13)
+      '@turnkey/iframe-stamper': 2.9.0
+      '@turnkey/viem': 0.13.1(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
+      '@turnkey/webauthn-stamper': 0.4.3
+      bs58: 6.0.0
+      jwt-decode: 4.0.0
+      viem: 2.33.3(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      zod: 3.25.76
+      zustand: 5.0.9(@types/react@18.3.22)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
