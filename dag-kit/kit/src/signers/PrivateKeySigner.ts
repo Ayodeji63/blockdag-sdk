@@ -5,12 +5,13 @@ import {
   type Chain,
   type Account,
   type WalletClient,
+  LocalAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { ISigner } from "./types.js";
 
 export class PrivateKeySigner implements ISigner {
-  private account: Account;
+  private account: LocalAccount;
   private walletClient;
 
   constructor(privateKey: `0x${string}`, chain: Chain, rpcUrl: string) {
@@ -22,7 +23,7 @@ export class PrivateKeySigner implements ISigner {
     });
   }
 
-  getAccount(): Account {
+  getAccount(): LocalAccount {
     return this.account;
   }
 

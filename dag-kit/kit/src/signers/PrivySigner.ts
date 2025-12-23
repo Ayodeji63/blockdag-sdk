@@ -5,6 +5,7 @@ import {
   createWalletClient,
   custom,
   type Chain,
+  LocalAccount,
 } from "viem";
 import { ISigner } from "./types.js";
 
@@ -35,7 +36,7 @@ export class PrivySigner implements ISigner {
     this.chain = chain;
   }
 
-  async getAccount(): Promise<Account> {
+  async getAccount(): Promise<LocalAccount> {
     const provider = await this.privyWallet.getEthereumProvider();
 
     if (!provider) {
@@ -48,7 +49,7 @@ export class PrivySigner implements ISigner {
       type: "json-rpc",
       // @ts-ignore - Privy provider compatible with viem
       source: "privateKey",
-    } as Account;
+    } as unknown as LocalAccount;
   }
 
   async getWalletClient(): Promise<WalletClient> {
