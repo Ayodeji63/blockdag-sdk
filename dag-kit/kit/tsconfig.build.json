@@ -1,6 +1,21 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist/esm"
-  }
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "sourceMap": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "**/__tests__",
+    "**/*.test.ts",
+    "**/*.test-d.ts",
+    "**/*.e2e.test.ts",
+    ".storybook/**/*"
+  ]
 }
