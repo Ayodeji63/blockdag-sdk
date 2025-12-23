@@ -10,6 +10,7 @@ import {
   encodeFunctionData,
   parseEther,
 } from "viem";
+import { ISigner } from "../signers/types.js";
 
 export interface DagAAConfig {
   chain: Chain;
@@ -21,7 +22,7 @@ export interface DagAAConfig {
 }
 
 export interface SmartAccountConfig {
-  signer: any;
+  signer: ISigner;
   accountAddress?: Address;
 }
 

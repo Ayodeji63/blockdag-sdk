@@ -28,6 +28,7 @@ import {
   SendUserOperationParams,
   UserOperationReceipt,
 } from "../types.js";
+import { ISigner } from "../../signers/types.js";
 
 // ==============================================================================
 // Main SDK Class

@@ -211,9 +211,6 @@ importers:
 
   dag-kit/kit:
     dependencies:
-      '@dag-kit/signer':
-        specifier: workspace:*
-        version: link:../signer
       '@privy-io/react-auth':
         specifier: ^3.9.1
         version: 3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
@@ -451,9 +448,6 @@ importers:
 
   dag-kit/react:
     dependencies:
-      '@dag-kit/kit':
-        specifier: workspace:*
-        version: link:../kit
       '@privy-io/react-auth':
         specifier: ^3.9.1
         version: 3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
@@ -5762,15 +5756,6 @@ packages:
       supports-color:
         optional: true
 
-  debug@4.3.7:
-    resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
-    engines: {node: '>=6.0'}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
@@ -9946,8 +9931,8 @@ packages:
     resolution: {integrity: sha512-4MY14EMsyEPFA6lM01XIYepRdV8P6dUir2hxAlAysOYcbNAy5QNHYgIHOcQ1KYM7wTcKnKEW/ZRoIxRinWRXvA==}
     engines: {node: '>=10.0.0'}
 
-  socket.io-parser@4.2.4:
-    resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
+  socket.io-parser@4.2.5:
+    resolution: {integrity: sha512-bPMmpy/5WWKHea5Y/jYAP6k74A+hvmRCQaJuJB6I/ML5JZq/KfNieUVo/3Mh7SAqn7TyFdIo6wqYHInG1MU1bQ==}
     engines: {node: '>=10.0.0'}
 
   socks-proxy-agent@8.0.5:
@@ -19745,10 +19730,6 @@ snapshots:
     dependencies:
       ms: 2.1.2
 
-  debug@4.3.7:
-    dependencies:
-      ms: 2.1.3
-
   debug@4.4.3:
     dependencies:
       ms: 2.1.3
@@ -20833,7 +20814,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 4.7.0
+      readable-stream: 3.6.2
       webextension-polyfill: 0.10.0
 
   eyes@0.1.8: {}
@@ -24047,7 +24028,7 @@ snapshots:
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
-      '@noble/curves': 1.9.2
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
@@ -25356,16 +25337,16 @@ snapshots:
       '@socket.io/component-emitter': 3.1.2
       debug: 4.4.3
       engine.io-client: 6.6.4(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      socket.io-parser: 4.2.4
+      socket.io-parser: 4.2.5
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
 
-  socket.io-parser@4.2.4:
+  socket.io-parser@4.2.5:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
