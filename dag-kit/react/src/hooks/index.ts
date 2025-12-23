@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
 import type { DagAAConfig } from "@dag-kit/kit";
-import { DagAAClient } from "@dag-kit/kit/dist/types/clients/actions/main";
-import { PrivySigner } from "@dag-kit/kit/src/index";
+import { DagAAClient } from "@dag-kit/kit";
+import { PrivySigner } from "@dag-kit/kit";
 import type { Address } from "viem";
 import { symbol } from "zod";
 

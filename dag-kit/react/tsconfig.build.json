@@ -1,18 +1,18 @@
 {
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": false
+  },
+  "include": ["src"],
   "exclude": [
     "node_modules",
-    "**/*/__tests__",
-    "**/*/*.test.ts",
-    "**/*/*.test-d.ts",
-    "**/*/*.e2e.test.ts",
-    "vitest.config.ts",
-    "vitest.config.e2e.ts",
-    "tailwind.config.js",
-    ".storybook/**/*"
-  ],
-  "include": ["src"],
-  "compilerOptions": {
-    "sourceMap": true,
-    "jsx": "react-jsx"
-  }
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.e2e.*",
+    "vitest.config.*",
+    ".storybook/**"
+  ]
 }
