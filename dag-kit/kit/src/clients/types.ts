@@ -11,8 +11,6 @@ import {
   parseEther,
 } from "viem";
 
-import { ISigner } from "@dag-kit/signer";
-
 export interface DagAAConfig {
   chain: Chain;
   rpcUrl: string;
@@ -23,7 +21,7 @@ export interface DagAAConfig {
 }
 
 export interface SmartAccountConfig {
-  signer: ISigner;
+  signer: any;
   accountAddress?: Address;
 }
 

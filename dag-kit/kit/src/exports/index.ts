@@ -8,3 +8,5 @@ export {
 } from "../clients/types.js";
 
 export { awakening, arbitrumSep } from "../clients/chains.js";
+
+export { DagAAClient } from "../clients/actions/main.js";

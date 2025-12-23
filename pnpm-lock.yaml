@@ -212,8 +212,8 @@ importers:
   dag-kit/kit:
     dependencies:
       '@dag-kit/signer':
-        specifier: ^1.0.0
-        version: 1.0.0(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: workspace:*
+        version: link:../signer
       '@privy-io/react-auth':
         specifier: ^3.9.1
         version: 3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
@@ -451,6 +451,9 @@ importers:
 
   dag-kit/react:
     dependencies:
+      '@dag-kit/kit':
+        specifier: workspace:*
+        version: link:../kit
       '@privy-io/react-auth':
         specifier: ^3.9.1
         version: 3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
@@ -528,9 +531,6 @@ importers:
       '@aa-sdk/core':
         specifier: ^4.77.1
         version: 4.82.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@dag-kit/signer':
-        specifier: ^1.0.0
-        version: 1.0.0(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@noble/curves':
         specifier: ^1.9.2
         version: 1.9.7
@@ -686,7 +686,7 @@ importers:
         version: 1.3.5
       typebox:
         specifier: ^1.0.0
-        version: 1.0.65
+        version: 1.0.66
 
   templates/eslint:
     dependencies:
@@ -1602,17 +1602,6 @@ packages:
   '@dag-kit/plugingen@1.0.0':
     resolution: {integrity: sha512-k3BHxJdRLiM3YEn6I/znwIQczZ+2+n4pn/9LhFWK57Er3CzsnEX882HOaZkn8AzqgO1GJWeGFrKfh/sR+le+BQ==}
     hasBin: true
-    peerDependencies:
-      viem: 2.33.3
-
-  '@dag-kit/signer@1.0.0':
-    resolution: {integrity: sha512-dCKak2vDN16fNQawId6EAKcEpnuQs0OXBI/luUaZffSxJZjbDIyRdXBBDZ0zGgp30KMiZ2KEnRE0COwH/7RTIw==}
-    peerDependencies:
-      viem: 2.33.3
-
-  '@dag-kit/signer@file:dag-kit/kit/dag-kit-signer-1.0.0.tgz':
-    resolution: {integrity: sha512-8SaUTs7EW0pqWke3cY6gekDCHNb/oe0Ggcst8twsl6v7+JNmnra8eWFXU2APYe3TDcIfXaZwgIqBQY8UapKktQ==, tarball: file:dag-kit/kit/dag-kit-signer-1.0.0.tgz}
-    version: 1.0.0
     peerDependencies:
       viem: 2.33.3
 
@@ -6034,8 +6023,8 @@ packages:
   end-of-stream@1.4.5:
     resolution: {integrity: sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==}
 
-  engine.io-client@6.6.3:
-    resolution: {integrity: sha512-T0iLjnyNWahNyv/lcjS2y4oE358tVS/SYQNxYXGAJ9/GLgH4VCvOQ/mhTjqU88mLZCQgiG8RIegFHYCdVC+j5w==}
+  engine.io-client@6.6.4:
+    resolution: {integrity: sha512-+kjUJnZGwzewFDw951CDWcwj35vMNf2fcj7xQWOctq1F2i1jkDdVvdFG9kM/BEChymCH36KgjnW0NsL58JYRxw==}
 
   engine.io-parser@5.2.3:
     resolution: {integrity: sha512-HqD3yTBfnBxIrbnM1DoD6Pcq8NECnh8d4As1Qgh0z5Gg3jRRIqijury0CL3ghu/edArpUYiYqQiDUQBIs4np3Q==}
@@ -6532,8 +6521,8 @@ packages:
   fast-uri@3.1.0:
     resolution: {integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==}
 
-  fastq@1.19.1:
-    resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
+  fastq@1.20.1:
+    resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
 
   fault@2.0.1:
     resolution: {integrity: sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==}
@@ -10583,8 +10572,8 @@ packages:
   type@2.7.3:
     resolution: {integrity: sha512-8j+1QmAbPvLZow5Qpi6NCaN8FB60p/6x8/vfNqOk/hC+HuvFZhL4+WfekuhQLiqFZXOgQdrs3B+XxEmCc6b3FQ==}
 
-  typebox@1.0.65:
-    resolution: {integrity: sha512-3WaZ4QmfAxmelhi0dwusYDoZ+DLDoVrsc3aORzgtk1I8JfIf4wn+F8i1TtrnU2jJKM/hZgjJGfzXrwS4B31zZw==}
+  typebox@1.0.66:
+    resolution: {integrity: sha512-dL2vPWkqPCjdd0QK2vO/JNYkGFE47t2gTSLxNpXBkVYHG8tMWLt0HKeBpsxBDnSi29TvHb2gIZgKh2kWs31Khw==}
 
   typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
@@ -11543,7 +11532,7 @@ snapshots:
     dependencies:
       deep-equal: 2.2.3
       ox: 0.6.12(typescript@5.9.3)(zod@3.25.76)
-      typebox: 1.0.65
+      typebox: 1.0.66
       typescript: 5.9.3
       viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
     transitivePeerDependencies:
@@ -12688,114 +12677,6 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
       - typescript
-
-  '@dag-kit/signer@1.0.0(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
-    dependencies:
-      '@aa-sdk/core': 4.82.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@dag-kit/signer': file:dag-kit/kit/dag-kit-signer-1.0.0.tgz(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.7.1
-      '@noble/secp256k1': 2.3.0
-      '@solana/web3.js': 1.98.4(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@turnkey/http': 3.16.0(encoding@0.1.13)
-      '@turnkey/iframe-stamper': 2.9.0
-      '@turnkey/viem': 0.13.1(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
-      '@turnkey/webauthn-stamper': 0.4.3
-      bs58: 6.0.0
-      jwt-decode: 4.0.0
-      viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      zod: 3.25.76
-      zustand: 5.0.9(@types/react@18.3.22)(react@18.3.1)(use-sync-external-store@1.2.0(react@18.3.1))
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - encoding
-      - immer
-      - react
-      - typescript
-      - use-sync-external-store
-      - utf-8-validate
-
-  '@dag-kit/signer@1.0.0(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
-    dependencies:
-      '@aa-sdk/core': 4.82.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@dag-kit/signer': file:dag-kit/kit/dag-kit-signer-1.0.0.tgz(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.7.1
-      '@noble/secp256k1': 2.3.0
-      '@solana/web3.js': 1.98.4(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@turnkey/http': 3.16.0(encoding@0.1.13)
-      '@turnkey/iframe-stamper': 2.9.0
-      '@turnkey/viem': 0.13.1(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
-      '@turnkey/webauthn-stamper': 0.4.3
-      bs58: 6.0.0
-      jwt-decode: 4.0.0
-      viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      zod: 3.25.76
-      zustand: 5.0.9(@types/react@18.3.22)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - encoding
-      - immer
-      - react
-      - typescript
-      - use-sync-external-store
-      - utf-8-validate
-
-  '@dag-kit/signer@file:dag-kit/kit/dag-kit-signer-1.0.0.tgz(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
-    dependencies:
-      '@aa-sdk/core': 4.82.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@dag-kit/signer': 1.0.0(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.7.1
-      '@noble/secp256k1': 2.3.0
-      '@solana/web3.js': 1.98.4(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@turnkey/http': 3.16.0(encoding@0.1.13)
-      '@turnkey/iframe-stamper': 2.9.0
-      '@turnkey/viem': 0.13.1(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
-      '@turnkey/webauthn-stamper': 0.4.3
-      bs58: 6.0.0
-      jwt-decode: 4.0.0
-      viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      zod: 3.25.76
-      zustand: 5.0.9(@types/react@18.3.22)(react@18.3.1)(use-sync-external-store@1.2.0(react@18.3.1))
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - encoding
-      - immer
-      - react
-      - typescript
-      - use-sync-external-store
-      - utf-8-validate
-
-  '@dag-kit/signer@file:dag-kit/kit/dag-kit-signer-1.0.0.tgz(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
-    dependencies:
-      '@aa-sdk/core': 4.82.0(typescript@5.9.3)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@dag-kit/signer': 1.0.0(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react@18.3.1)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@noble/curves': 1.9.7
-      '@noble/hashes': 1.7.1
-      '@noble/secp256k1': 2.3.0
-      '@solana/web3.js': 1.98.4(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
-      '@turnkey/http': 3.16.0(encoding@0.1.13)
-      '@turnkey/iframe-stamper': 2.9.0
-      '@turnkey/viem': 0.13.1(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
-      '@turnkey/webauthn-stamper': 0.4.3
-      bs58: 6.0.0
-      jwt-decode: 4.0.0
-      viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      zod: 3.25.76
-      zustand: 5.0.9(@types/react@18.3.22)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - encoding
-      - immer
-      - react
-      - typescript
-      - use-sync-external-store
-      - utf-8-validate
 
   '@ecies/ciphers@0.2.5(@noble/ciphers@1.3.0)':
     dependencies:
@@ -14235,7 +14116,7 @@ snapshots:
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.19.1
+      fastq: 1.20.1
 
   '@npmcli/agent@2.2.2':
     dependencies:
@@ -20095,12 +19976,12 @@ snapshots:
     dependencies:
       once: 1.4.0
 
-  engine.io-client@6.6.3(bufferutil@4.1.0)(utf-8-validate@5.0.10):
+  engine.io-client@6.6.4(bufferutil@4.1.0)(utf-8-validate@5.0.10):
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.7
+      debug: 4.4.3
       engine.io-parser: 5.2.3
-      ws: 8.17.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      ws: 8.18.3(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       xmlhttprequest-ssl: 2.1.2
     transitivePeerDependencies:
       - bufferutil
@@ -20952,7 +20833,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 3.6.2
+      readable-stream: 4.7.0
       webextension-polyfill: 0.10.0
 
   eyes@0.1.8: {}
@@ -20985,7 +20866,7 @@ snapshots:
 
   fast-uri@3.1.0: {}
 
-  fastq@1.19.1:
+  fastq@1.20.1:
     dependencies:
       reusify: 1.1.0
 
@@ -25474,7 +25355,7 @@ snapshots:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
       debug: 4.4.3
-      engine.io-client: 6.6.3(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      engine.io-client: 6.6.4(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
@@ -26128,7 +26009,7 @@ snapshots:
   type@2.7.3:
     optional: true
 
-  typebox@1.0.65: {}
+  typebox@1.0.66: {}
 
   typed-array-buffer@1.0.3:
     dependencies:

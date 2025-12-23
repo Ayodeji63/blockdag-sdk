@@ -84,7 +84,8 @@
     "bs58": "^6.0.0",
     "react-remove-scroll": "^2.5.10",
     "zod": "^3.22.4",
-    "zustand": "^5.0.0-rc.2"
+    "zustand": "^5.0.0-rc.2",
+    "@dag-kit/kit": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.28.9",

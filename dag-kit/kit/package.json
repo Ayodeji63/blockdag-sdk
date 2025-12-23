@@ -1,6 +1,6 @@
 {
   "name": "@dag-kit/kit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "author": "Abstract",
   "license": "MIT",
@@ -44,7 +44,7 @@
     "test:e2e": "bun test ./src/**/*.e2e.test.*"
   },
   "dependencies": {
-    "@dag-kit/signer": "^1.0.0",
+    "@dag-kit/signer": "workspace:*",
     "@privy-io/react-auth": "^3.9.1",
     "@privy-io/wagmi-connector": "^0.1.13",
     "@turnkey/react-wallet-kit": "^1.7.1",
