@@ -483,6 +483,9 @@ importers:
         specifier: ^3.0.0
         version: 3.6.5(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
     devDependencies:
+      '@dag-kit/kit':
+        specifier: ./dag-kit-kit-1.0.3-alpha.1.tgz
+        version: file:dag-kit/react/dag-kit-kit-1.0.3-alpha.1.tgz(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@turnkey/react-native-passkey-stamper@1.2.6(encoding@0.1.13)(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@tanstack/react-query':
         specifier: ^5.28.9
         version: 5.90.12(react@18.3.1)
@@ -1589,6 +1592,10 @@ packages:
   '@csstools/css-tokenizer@3.0.4':
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
+
+  '@dag-kit/kit@file:dag-kit/react/dag-kit-kit-1.0.3-alpha.1.tgz':
+    resolution: {integrity: sha512-GpOI4sGJ3yZ2faRBB9kppOQVOvE9CJSPLQTmNaSu8P4oFIgN5jY5ExQh97+RpPNIXYgCpXXcYbwr7M9nKB9PiQ==, tarball: file:dag-kit/react/dag-kit-kit-1.0.3-alpha.1.tgz}
+    version: 1.0.3-alpha.1
 
   '@dag-kit/logging@1.0.0':
     resolution: {integrity: sha512-PTU4usfum9b0svXMxg7yO+KgCmqneeVnwGhhlBPvcJQNwyBCR4NLKkEBX2RqeUuXRQmji4eZajTTZI+adBbMNg==}
@@ -12634,6 +12641,64 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
+  '@dag-kit/kit@file:dag-kit/react/dag-kit-kit-1.0.3-alpha.1.tgz(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@turnkey/react-native-passkey-stamper@1.2.6(encoding@0.1.13)(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)':
+    dependencies:
+      '@privy-io/react-auth': 3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
+      '@privy-io/wagmi-connector': 0.1.13(@privy-io/react-auth@3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.12.7(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))
+      '@turnkey/react-wallet-kit': 1.7.1(@turnkey/react-native-passkey-stamper@1.2.6(encoding@0.1.13)(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      dotenv: 16.6.1
+      magic-sdk: 32.0.0
+      permissionless: 0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+      viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      wagmi: 2.12.7(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
+    transitivePeerDependencies:
+      - '@abstract-foundation/agw-client'
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@solana-program/memo'
+      - '@solana-program/system'
+      - '@solana-program/token'
+      - '@solana/kit'
+      - '@solana/sysvars'
+      - '@tanstack/query-core'
+      - '@tanstack/react-query'
+      - '@turnkey/react-native-passkey-stamper'
+      - '@types/react'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - aws4fetch
+      - bufferutil
+      - db0
+      - encoding
+      - fastestsmallesttextencoderdecoder
+      - immer
+      - ioredis
+      - ox
+      - react
+      - react-dom
+      - react-native
+      - react-native-keychain
+      - rolldown
+      - rollup
+      - supports-color
+      - typescript
+      - uploadthing
+      - use-sync-external-store
+      - utf-8-validate
+      - ws
+      - zod
+
   '@dag-kit/logging@1.0.0(encoding@0.1.13)':
     dependencies:
       '@segment/analytics-next': 1.74.0(encoding@0.1.13)
@@ -14805,6 +14870,14 @@ snapshots:
       '@privy-io/api-types': 0.3.4
 
   '@privy-io/urls@0.0.2': {}
+
+  ? '@privy-io/wagmi-connector@0.1.13(@privy-io/react-auth@3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.12.7(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))'
+  : dependencies:
+      '@privy-io/react-auth': 3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      viem: 2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+      wagmi: 2.12.7(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76)
 
   ? '@privy-io/wagmi-connector@0.1.13(@privy-io/react-auth@3.9.1(@solana-program/token@0.9.0(@solana/kit@5.1.0(typescript@5.9.3)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))))(@solana/kit@5.1.0(typescript@5.9.3)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)))(@solana/sysvars@5.1.0(typescript@5.9.3))(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(permissionless@0.3.2(ox@0.6.12(typescript@5.9.3)(zod@3.25.76))(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)))(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(use-sync-external-store@1.2.0(react@18.3.1))(utf-8-validate@5.0.10)(ws@8.18.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.12.7(@tanstack/query-core@5.90.12)(@tanstack/react-query@5.90.12(react@18.3.1))(@types/react@18.3.22)(bufferutil@4.1.0)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.5)(@types/react@18.3.22)(bufferutil@4.1.0)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.54.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(viem@2.33.3(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))'
   : dependencies:
@@ -20814,7 +20887,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 3.6.2
+      readable-stream: 4.7.0
       webextension-polyfill: 0.10.0
 
   eyes@0.1.8: {}
@@ -24028,7 +24101,7 @@ snapshots:
     dependencies:
       '@adraffy/ens-normalize': 1.11.1
       '@noble/ciphers': 1.3.0
-      '@noble/curves': 1.9.7
+      '@noble/curves': 1.9.2
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0

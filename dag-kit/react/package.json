@@ -63,6 +63,7 @@
     "test:run": "vitest run --passWithNoTests"
   },
   "devDependencies": {
+    "@dag-kit/kit": "./dag-kit-kit-1.0.3-alpha.1.tgz",
     "@tanstack/react-query": "^5.28.9",
     "@types/bs58": "^4.0.4",
     "autoprefixer": "^10.4.20",
