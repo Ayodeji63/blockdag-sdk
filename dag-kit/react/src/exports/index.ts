@@ -1,2 +1,2 @@
-export { DagAAPrivyProvider } from "../PrivyProvider";
-export { usePrivySigner, useDagAA } from "../hooks/index";
+export { DagAAProvider } from "../PrivyProvider";
+export { useDagAA, usePrivy as useAuth, useWallets } from "../hooks/index";

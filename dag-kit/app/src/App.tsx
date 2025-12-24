@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  DagAAProvider,
+  DagLoginButton,
+  DagAccountWidget,
+  DagTransactionButton,
+  useAuth,
+} from "@dag-kit/react";
+import { sepolia } from "viem/chains";
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const { authenticated } = useAuth();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ padding: "2rem" }}>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "2rem",
+        }}
+      >
+        <h1>My dApp</h1>
+        {authenticated ? (
+          <DagAccountWidget showBalance showDisconnect />
+        ) : (
+          <DagLoginButton />
+        )}
+      </header>
 
-export default App
+      {authenticated && (
+        <main>
+          <h2>Welcome!</h2>
+          <p>You're connected with your DAG Smart Account</p>
+
+          <DagTransactionButton
+            to="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+            value={0n}
+            text="Send Test Transaction"
+            onSuccess={(hash) => alert(`Transaction sent: ${hash}`)}
+            onError={(error) => alert(`Failed: ${error.message}`)}
+          />
+        </main>
+      )}
+    </div>
+  );
+}

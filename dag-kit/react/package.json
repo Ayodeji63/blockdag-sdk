@@ -1,15 +1,15 @@
 {
   "name": "@dag-kit/react",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "React components and hooks for using Smart Wallets",
   "author": "Abstract",
   "license": "MIT",
   "private": false,
   "type": "module",
-  "main": "./dist/esm/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
-  "typings": "./dist/types/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",
@@ -24,9 +24,9 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "default": "./dist/esm/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./styles.css": "./dist/styles.css",
     "./tailwind": {
@@ -53,8 +53,8 @@
   },
   "scripts": {
     "prebuild": "tsx ./inject-version.ts",
-    "dev": "storybook dev",
-    "build": "pnpm clean && pnpm build:esm && pnpm build:types",
+    "dev": "tsup -watch",
+    "build": "pnpm clean && tsup",
     "build:css": "postcss src/styles/index.css -o dist/styles.css",
     "build:esm": "tsc --project tsconfig.build.json --outDir ./dist/esm",
     "build:types": "tsc --project tsconfig.build.json --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
@@ -63,7 +63,7 @@
     "test:run": "vitest run --passWithNoTests"
   },
   "devDependencies": {
-    "@dag-kit/kit": "file:../kit/dag-kit-kit-1.0.3-alpha.8.tgz",
+    "@dag-kit/kit": "file:../kit/dag-kit-kit-1.0.4-alpha.2.tgz",
     "@tanstack/react-query": "^5.28.9",
     "@types/bs58": "^4.0.4",
     "@types/node": "^25.0.3",

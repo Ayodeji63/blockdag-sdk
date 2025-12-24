@@ -27,6 +27,6 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
-    "@dag-kit/kit": "file:../react/dag-kit-react-1.0.0.tgz"
+    "@dag-kit/react": "file:../react/dag-kit-react-1.0.4.tgz"
   }
 }

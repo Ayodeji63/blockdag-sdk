@@ -1,10 +1,10 @@
-import { Account, WalletClient } from "viem";
+// src/signers/types.ts
+import { Account, LocalAccount, WalletClient } from "viem";
 
 /**
  * Common interface for all signers
  * This allows users to plug in different signing methods
  */
-
 export interface ISigner {
   /**
    * Get the viem Account object for signing
@@ -19,7 +19,7 @@ export interface ISigner {
   /**
    * Get the signer's address
    */
-  getAddress(): `0x${string}` | Promise<`0${string}`>;
+  getAddress(): `0x${string}` | Promise<`0x${string}`>;
 
   /**
    * Check if signer is ready/connected
@@ -28,9 +28,8 @@ export interface ISigner {
 }
 
 /**
- *  Configuration for different signer types
+ * Configuration for different signer types
  */
-
 export type SignerConfig =
   | {
       type: "privateKey";
@@ -38,6 +37,7 @@ export type SignerConfig =
     }
   | {
       type: "privy";
+      // Privy handles its own state, no config needed
     }
   | {
       type: "custom";
