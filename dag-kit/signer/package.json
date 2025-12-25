@@ -1,19 +1,77 @@
 {
   "name": "signer",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "React components and hooks for using Smart Wallets",
+  "author": "Abstract",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!dist/**/*.tsbuildinfo",
+    "!vitest.config.ts",
+    "!.env",
+    "!src/**/*.test.ts",
+    "!src/**/*.test-d.ts",
+    "!src/__tests__/**/*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tailwind": {
+      "types": "./dist/types/tailwind/index.d.ts",
+      "import": "./dist/esm/tailwind/index.js",
+      "default": "./dist/esm/tailwind/index.js"
+    },
+    "./alchemy-account-context": {
+      "types": "./dist/types/AlchemyAccountContext.d.ts",
+      "import": "./dist/esm/AlchemyAccountContext.js",
+      "default": "./dist/esm/AlchemyAccountContext.js"
+    },
+    "./hydrate": {
+      "types": "./dist/types/hydrate.d.ts",
+      "import": "./dist/esm/hydrate.js",
+      "default": "./dist/esm/hydrate.js"
+    },
+    "./hooks": {
+      "types": "./dist/types/hooks/index.d.ts",
+      "import": "./dist/esm/hooks/index.js",
+      "default": "./dist/esm/hooks/index.js"
+    },
+    "./package.json": "./package.json"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "scripts": {
+    "prebuild": "tsx ./inject-version.ts",
+    "dev": "tsup -watch",
+    "build": "pnpm clean && tsup",
+    "build:css": "postcss src/styles/index.css -o dist/styles.css",
+    "build:esm": "tsc --project tsconfig.build.json --outDir ./dist/esm",
+    "build:types": "tsc --project tsconfig.build.json --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
+    "clean": "rm -rf ./dist",
+    "test": "vitest --passWithNoTests",
+    "test:run": "vitest run --passWithNoTests"
+  },
   "dependencies": {
     "@turnkey/api-key-stamper": "^0.5.0",
     "@turnkey/http": "^3.16.0",
     "@turnkey/iframe-stamper": "^2.9.0",
     "@turnkey/viem": "^0.14.20",
-    "@turnkey/webauthn-stamper": "^0.6.0"
+    "@turnkey/webauthn-stamper": "^0.6.0",
+    "@dag-kit/kit": "file:../kit/dag-kit-kit-1.0.4-alpha.2.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.10",
+    "tsx": "^3.13.0"
   }
 }

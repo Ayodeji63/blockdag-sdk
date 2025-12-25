@@ -11,6 +11,7 @@ import {
 import { TurnkeyClient } from "@turnkey/http";
 import { createAccount } from "@turnkey/viem";
 import { ISigner } from "./types";
+import { IframeStamper } from "@turnkey/iframe-stamper";
 
 export interface TurnkeySignerConfig {
   chain: Chain;
@@ -67,6 +68,11 @@ export class TurnkeySigner implements ISigner {
         signWith: signWith,
       });
 
+      this.walletClient = createWalletClient({
+        account: this.account,
+        chain: this.chain || null,
+        transport: http(this.rpcUrl),
+      });
       this.isConnected = true;
       console.log("Turnkey signer connected:", this.account.address);
     } catch (err) {
@@ -204,14 +210,13 @@ export async function createWebAuthnStamper() {
   });
 }
 
-export async function createIframeStamper(
-  iframeUrl: string,
-  iframeElementId: string
-) {
-  const { IframeStamper } = await import("@turnkey/iframe-stamper");
+export async function createIframeStamper(iframeUrl: string) {
+  const TurnkeyIframeContainerId = "turnkey-iframe-container";
+  const TurnkeyIframeElementId = "turnkey-iframe";
   return new IframeStamper({
     iframeUrl,
-    iframeElementId,
+    iframeElementId: TurnkeyIframeElementId,
+    iframeContainer: document.getElementById(TurnkeyIframeContainerId),
   });
 }
 export async function createApiKeyStamper(

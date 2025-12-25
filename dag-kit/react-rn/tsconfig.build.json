@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "sourceMap": true,
+    "declaration": true,
+    "emitDeclarationOnly": false
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.e2e.*",
+    "vitest.config.*",
+    ".storybook/**"
+  ]
+}

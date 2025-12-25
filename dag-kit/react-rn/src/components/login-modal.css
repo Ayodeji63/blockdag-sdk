@@ -1,0 +1,191 @@
+.dagkit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+.dagkit-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 420px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.dagkit-modal.dark {
+  background: #1a1a1a;
+  color: white;
+}
+
+.dagkit-modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.dagkit-logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+.dagkit-modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.dagkit-close-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 4px;
+}
+
+.dagkit-social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dagkit-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.dagkit-social-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.dagkit-social-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dagkit-divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: #666;
+}
+
+.dagkit-divider::before,
+.dagkit-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.dagkit-divider span {
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.dagkit-email-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dagkit-input {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.dagkit-input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.dagkit-submit-btn {
+  padding: 12px 24px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dagkit-submit-btn:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.dagkit-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dagkit-toggle-mode {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.dagkit-toggle-mode button {
+  background: none;
+  border: none;
+  color: #6366f1;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .dagkit-modal {
+    padding: 24px;
+  }
+}
