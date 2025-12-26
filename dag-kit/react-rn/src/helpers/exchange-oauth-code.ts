@@ -5,35 +5,35 @@ export async function exchangeOAuthCode(
   provider: SocialProvider,
   config?: DagKitConfig
 ): Promise<{ user: User; session: Session }> {
-  // Call your backend to exchange code for tokens
-  const response = await fetch(
-    `${config?.turnkeyApiUrl || ""}/api/oauth/exchange`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code,
-        provider,
-      }),
-    }
-  );
+  // if (!config?.turnkeyApiUrl) {
+  //   throw new Error("turnkeyApiUrl is required for OAuth exchange");
+  // }
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to exchange OAuth code");
+  const response = await fetch(`http://localhost:3000/api/oauth/exchange`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code, provider }),
+  });
+
+  const text = await response.text();
+
+  let data: any;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    throw new Error("Backend returned invalid JSON");
   }
 
-  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.message || "Failed to exchange OAuth code");
+  }
 
-  // Transform response to User and Session
   const user: User = {
     id: data.userId,
     email: data.email,
     name: data.name,
     picture: data.picture,
-    provider: provider,
+    provider,
     walletAddress: data.walletAddress,
     createdAt: Date.now(),
   };

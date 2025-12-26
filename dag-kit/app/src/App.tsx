@@ -1,46 +1,29 @@
-import {
-  DagAAProvider,
-  DagLoginButton,
-  DagAccountWidget,
-  DagTransactionButton,
-  useAuth,
-} from "@dag-kit/react";
-import { sepolia } from "viem/chains";
+import { LoginButton } from "./components/LoginButton";
+import { Dashboard } from "./pages/dashboard";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { OAuthCallbackPage } from "@dag-kit/react-rn";
 
 export function App() {
-  const { authenticated } = useAuth();
+  function Home() {
+    return (
+      <div className="app">
+        <nav className="navbar">
+          <div className="nav-brand">BlockDAG</div>
+          <div className="nav-menu">{/* <LoginButton /> */}</div>
+        </nav>
 
-  return (
-    <div style={{ padding: "2rem" }}>
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "2rem",
-        }}
-      >
-        <h1>My dApp</h1>
-        {authenticated ? (
-          <DagAccountWidget showBalance showDisconnect />
-        ) : (
-          <DagLoginButton />
-        )}
-      </header>
-
-      {authenticated && (
-        <main>
-          <h2>Welcome!</h2>
-          <p>You're connected with your DAG Smart Account</p>
-
-          <DagTransactionButton
-            to="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-            value={0n}
-            text="Send Test Transaction"
-            onSuccess={(hash) => alert(`Transaction sent: ${hash}`)}
-            onError={(error) => alert(`Failed: ${error.message}`)}
-          />
+        <main className="main-content">
+          <Dashboard />
         </main>
-      )}
-    </div>
+      </div>
+    );
+  }
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/auth/callback" element={<OAuthCallbackPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

@@ -21,12 +21,15 @@ export function useOAuthLogin() {
 
     try {
       // Step 1: Initiate OAuth flow
+      console.log("Initiate OAuth");
       const authUrl = await initiateOAuthFlow(provider, config);
 
       // Step 2: Open OAuth pop or redirect
+      console.log("Open Pop-up");
       const result = await openOAuthWindow(authUrl);
 
       // Step 3: Exchange code for tokens
+      console.log("Exchange Auth");
       const { user, session } = await exchangeOAuthCode(result.code, provider);
 
       // Step 4: Store user and session

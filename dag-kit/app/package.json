@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.11.0"
   },
   "devDependencies": {
+    "@dag-kit/react-rn": "file:../react-rn/dag-kit-react-rn-1.0.0-beta.4.tgz",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
@@ -26,7 +29,6 @@
     "globals": "^16.5.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4",
-    "@dag-kit/react": "file:../react/dag-kit-react-1.0.4.tgz"
+    "vite": "^7.2.4"
   }
 }

@@ -31,7 +31,7 @@ export function DagKitProvider({
 
         const client = new TurnkeyClient(
           {
-            baseUrl: config.turnkeyApiUrl || "https://api.turnkey.com",
+            baseUrl: config.turnkeyApiUrl!,
           },
           stamper
         );

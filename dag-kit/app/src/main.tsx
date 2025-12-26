@@ -3,30 +3,28 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { App } from "./App.tsx";
-import { DagAAProvider } from "@dag-kit/react";
+import { DagKitProvider } from "@dag-kit/react-rn";
 import { awakening } from "@dag-kit/kit";
+
+const ORG_ID = import.meta.env.VITE_ORG_ID || undefined;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <DagAAProvider
-      privyAppId={import.meta.env.VITE_PRIVY_APP_ID || ""}
+    <DagKitProvider
       config={{
+        turnkeyOrganizationId: ORG_ID!,
+        turnkeyApiUrl: "http://localhost:3000",
         chain: awakening.chain_config,
-        rpcUrl: import.meta.env.VITE_RPC_URL,
-        bundlerUrl: awakening.bundler_rpc,
-        factoryAddress: import.meta.env.VITE_FACTORY_ADDRESS,
-        paymasterUrl: import.meta.env.VITE_PAYMASTER_URL,
-      }}
-      privyConfig={{
-        // Optional: Customize Privy
+        rpcUrl: "https://sepolia.rpc.thirdweb.com",
+        enabledProviders: ["google", "apple", "discord", "email"],
         appearance: {
-          theme: "dark",
-          accentColor: "#676FFF",
+          mode: "light",
+          logo: "/logo.png",
+          brandColor: "#6366f1",
         },
-        loginMethods: ["email", "google", "wallet"],
       }}
     >
       <App />
-    </DagAAProvider>
+    </DagKitProvider>
   </StrictMode>
 );

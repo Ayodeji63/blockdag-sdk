@@ -22,3 +22,9 @@ export function useAuth() {
     session,
   };
 }
+
+export { useConnectWallet } from "./useConnectWallet";
+export { useEmailLogin } from "./useEmailLogin";
+export { useOAuthLogin } from "./useOAuthLogin";
+export { useSignMessage } from "./useSignMessage";
+export { useWallet } from "./useWallet";

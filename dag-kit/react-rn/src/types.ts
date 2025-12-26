@@ -49,7 +49,7 @@ export interface Session {
 
 export interface DagKitConfig {
   turnkeyApiUrl?: string;
-  turnketOrganizationId: string;
+  turnkeyOrganizationId: string;
   chain?: Chain;
   rpcUrl?: string;
   enabledProviders?: SocialProvider[];
