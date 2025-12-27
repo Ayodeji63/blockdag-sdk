@@ -1,6 +1,6 @@
 {
   "name": "@dag-kit/react-rn",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-alpha.0",
   "description": "React components and hooks for using Smart Wallets",
   "author": "Abstract",
   "license": "MIT",
@@ -20,7 +20,8 @@
     "!.env",
     "!src/**/*.test.ts",
     "!src/**/*.test-d.ts",
-    "!src/__tests__/**/*"
+    "!src/__tests__/**/*",
+    "src/styles.css"
   ],
   "exports": {
     ".": {
@@ -54,7 +55,7 @@
   "scripts": {
     "prebuild": "tsx ./inject-version.ts",
     "dev": "tsup -watch",
-    "build": "pnpm clean && tsup",
+    "build": "pnpm clean && tsup && tailwindcss -i ./src/styles.css -o ./dist/styles.css",
     "build:css": "postcss src/styles/index.css -o dist/styles.css",
     "build:esm": "tsc --project tsconfig.build.json --outDir ./dist/esm",
     "build:types": "tsc --project tsconfig.build.json --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
@@ -69,15 +70,15 @@
     "@types/node": "^25.0.3",
     "@types/react": "18.3.22",
     "@types/react-dom": "18.3.5",
-    "autoprefixer": "^10.4.20",
+    "autoprefixer": "^10.4.23",
     "msw": "^2.4.4",
     "msw-storybook-addon": "^2.0.4",
-    "postcss": "^8.4.45",
+    "postcss": "^8.5.6",
     "postcss-cli": "^11.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^8.5.3",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^3.4.19",
     "typescript-template": "*"
   },
   "dependencies": {

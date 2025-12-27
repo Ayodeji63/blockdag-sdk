@@ -25,6 +25,7 @@ export type SocialProvider =
   | "facebook"
   | "discord"
   | "twitter"
+  // | "passkey"
   | "email";
 
 export interface User {
@@ -35,6 +36,8 @@ export interface User {
   provider: SocialProvider;
   walletAddress?: Address;
   createdAt: number;
+  subOrganizationId?: string;
+  privateKeyId?: string;
 }
 
 export interface Session {

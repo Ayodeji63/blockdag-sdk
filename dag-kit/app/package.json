@@ -16,7 +16,7 @@
     "react-router-dom": "^7.11.0"
   },
   "devDependencies": {
-    "@dag-kit/react-rn": "file:../react-rn/dag-kit-react-rn-1.0.0-beta.4.tgz",
+    "@dag-kit/react-rn": "file:../react-rn/dag-kit-react-rn-1.0.0-alpha.0.tgz",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",

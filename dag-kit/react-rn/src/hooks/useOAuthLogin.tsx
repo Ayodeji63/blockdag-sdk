@@ -33,6 +33,7 @@ export function useOAuthLogin() {
       const { user, session } = await exchangeOAuthCode(result.code, provider);
 
       // Step 4: Store user and session
+      console.log("Setting user.....");
       setUser(user);
       setSession(session);
 

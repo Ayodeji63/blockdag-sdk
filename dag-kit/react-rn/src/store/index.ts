@@ -1,7 +1,6 @@
 import { Address, WalletClient } from "viem";
 import { Session, SocialProvider, User } from "../types";
 import { TurnkeyClient } from "@turnkey/http";
-import { Wallet } from "@privy-io/react-auth";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { create } from "zustand";
 
@@ -13,6 +12,7 @@ interface AuthState {
   walletClient: WalletClient | null;
   smartAccountAddress: Address | null;
   turnkeyClient: TurnkeyClient | null;
+  _hasHydrated: boolean;
 
   setUser: (user: User | null) => void;
   setSession: (session: Session | null) => void;
@@ -20,6 +20,7 @@ interface AuthState {
   setSmartAccountAddress: (address: Address | null) => void;
   setTurnkeyClient: (client: TurnkeyClient | null) => void;
   setLoading: (loading: boolean) => void;
+  setHasHydrated: (_hasHydrated: boolean) => void;
 
   login: (provider: SocialProvider) => Promise<void>;
   logout: () => Promise<void>;
@@ -39,14 +40,30 @@ export const useAuthStore = create<AuthState>()(
       walletClient: null,
       smartAccountAddress: null,
       turnkeyClient: null,
+      _hasHydrated: false,
 
       // Setters
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
-      setSession: (session) => set({ session }),
-      setWalletClient: (walletClient: any) => set({ walletClient }),
-      setSmartAccountAddress: (smartAccountAddress) =>
-        set({ smartAccountAddress }),
-      setTurnkeyClient: (turnkeyClient) => set({ turnkeyClient }),
+      setHasHydrated: (hydrated: boolean) => set({ _hasHydrated: hydrated }),
+      setUser: (user) => {
+        console.log("Store: Setting user", user?.email);
+        set({ user, isAuthenticated: !!user });
+      },
+      setSession: (session) => {
+        console.log("Store: Setting session", session?.userId);
+        set({ session });
+      },
+      setWalletClient: (walletClient: any) => {
+        console.log("Store: Setting wallet client", !!walletClient);
+        set({ walletClient });
+      },
+      setSmartAccountAddress: (smartAccountAddress) => {
+        console.log("Store: setting smart account", smartAccountAddress);
+        set({ smartAccountAddress });
+      },
+      setTurnkeyClient: (turnkeyClient) => {
+        console.log("Store: Setting Turnkey client", !!turnkeyClient);
+        set({ turnkeyClient });
+      },
       setLoading: (isLoading) => set({ isLoading }),
 
       // Login method (will be implemented by provider)
@@ -65,7 +82,14 @@ export const useAuthStore = create<AuthState>()(
 
       // Logout
       logout: async () => {
-        set({ isLoading: true });
+        set({
+          isLoading: true,
+          user: null,
+          session: null,
+          isAuthenticated: false,
+          walletClient: null,
+          smartAccountAddress: null,
+        });
         try {
           // Clear session from backend if needed
           const { clear } = get();
@@ -112,6 +136,9 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
         smartAccountAddress: state.smartAccountAddress,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

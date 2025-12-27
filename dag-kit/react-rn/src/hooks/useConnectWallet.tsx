@@ -9,13 +9,21 @@ import { createWalletClient, http } from "viem";
  * hook to connect wallet after authentication
  */
 export function useConnectWallet() {
-  const { turnkeyClient, session, setWalletClient, setSmartAccountAddress } =
-    useAuthStore();
+  const {
+    turnkeyClient,
+    session,
+    setWalletClient,
+    setSmartAccountAddress,
+    _hasHydrated,
+  } = useAuthStore();
 
   const { config } = useDagKit();
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connect = async () => {
+    if (!_hasHydrated) {
+      throw new Error("Loading session... Please wait.");
+    }
     if (!turnkeyClient || !session) {
       throw new Error("Not authnticated. Please login first.");
     }
@@ -52,5 +60,6 @@ export function useConnectWallet() {
   return {
     connect,
     isConnecting,
+    isReady: _hasHydrated && !!session,
   };
 }

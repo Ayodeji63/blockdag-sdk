@@ -35,6 +35,11 @@ const OAUTH_CONFIGS: Record<SocialProvider, Partial<OAuthConfig>> = {
     scope: "tweet.read users.read",
     responseType: "code",
   },
+  // passkey: {
+  //   authUrl: "https://twitter.com/i/oauth2/authorize",
+  //   scope: "tweet.read users.read",
+  //   responseType: "code",
+  // },
   email: {
     authUrl: "", // Not used for email
     scope: "",

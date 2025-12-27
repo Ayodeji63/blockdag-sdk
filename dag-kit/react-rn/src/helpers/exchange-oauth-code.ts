@@ -28,6 +28,8 @@ export async function exchangeOAuthCode(
     throw new Error(data?.message || "Failed to exchange OAuth code");
   }
 
+  console.log("Data is given as", data);
+
   const user: User = {
     id: data.userId,
     email: data.email,
@@ -35,9 +37,12 @@ export async function exchangeOAuthCode(
     picture: data.picture,
     provider,
     walletAddress: data.walletAddress,
+    subOrganizationId: data.turnkeyOrganizationId,
+    privateKeyId: data.turnkeyPrivateKeyId,
     createdAt: Date.now(),
   };
 
+  console.log("User is given as", user);
   const session: Session = {
     userId: data.userId,
     turnkeyOrganizationId: data.turnkeyOrganizationId,
@@ -47,6 +52,8 @@ export async function exchangeOAuthCode(
     expiresAt: Date.now() + data.expiresIn * 1000,
     isActive: true,
   };
+
+  console.log("Session is given as", session);
 
   return { user, session };
 }

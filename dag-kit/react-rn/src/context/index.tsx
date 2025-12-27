@@ -9,8 +9,15 @@ import { DagKitConfig } from "../types";
 import { useAuthStore } from "../store";
 import { WebauthnStamper } from "@turnkey/webauthn-stamper";
 import { TurnkeyClient } from "@turnkey/http";
-import { DagKitContextValue, DagKitContext } from "./DagKitProvider";
+// import { DagKitContextValue, DagKitContext } from "./DagKitProvider";
 import { LoginModal } from "../components/LoginModal";
+
+export interface DagKitContextValue {
+  config: DagKitConfig;
+  openLoginModal: () => void;
+  closeLoginModal: () => void;
+}
+export const DagKitContext = createContext<DagKitContextValue | null>(null);
 
 export function DagKitProvider({
   children,
@@ -22,28 +29,28 @@ export function DagKitProvider({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { setTurnkeyClient, refreshSession, session } = useAuthStore();
 
-  useEffect(() => {
-    const initTurnkey = async () => {
-      try {
-        const stamper = new WebauthnStamper({
-          rpId: window.location.hostname,
-        });
+  // useEffect(() => {
+  //   const initTurnkey = async () => {
+  //     try {
+  //       const stamper = new WebauthnStamper({
+  //         rpId: window.location.hostname,
+  //       });
 
-        const client = new TurnkeyClient(
-          {
-            baseUrl: config.turnkeyApiUrl!,
-          },
-          stamper
-        );
+  //       const client = new TurnkeyClient(
+  //         {
+  //           baseUrl: config.turnkeyApiUrl!,
+  //         },
+  //         stamper
+  //       );
 
-        setTurnkeyClient(client);
-      } catch (error) {
-        console.error("Failed to initialize Turnkey:", error);
-      }
-    };
+  //       setTurnkeyClient(client);
+  //     } catch (error) {
+  //       console.error("Failed to initialize Turnkey:", error);
+  //     }
+  //   };
 
-    initTurnkey();
-  }, [config.turnkeyApiUrl, setTurnkeyClient]);
+  //   initTurnkey();
+  // }, [config.turnkeyApiUrl, setTurnkeyClient]);
 
   useEffect(() => {
     if (!session || !session.isActive) return;

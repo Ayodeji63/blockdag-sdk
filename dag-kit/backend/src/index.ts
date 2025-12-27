@@ -12,8 +12,14 @@ import { ApiKeyStamper } from "@turnkey/api-key-stamper";
 import axios from "axios";
 import crypto from "crypto";
 import dotenv from "dotenv";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 
 // ==============================================================================
 // CONFIGURATION
@@ -66,6 +72,64 @@ const config = {
   // Frontend URL for CORS
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
 };
+
+// =============================================================================
+// SUPABASE
+// =============================================================================
+
+async function getUserByProviderId(
+  providerId: string
+): Promise<UserRecord | null> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("provider_id", providerId)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 = no rows
+    console.error("Supabase error fetching user:", error);
+  }
+
+  return data || null;
+}
+
+async function getUserByEmail(email: string): Promise<UserRecord | null> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    console.error("Supabase error fetching user by email:", error);
+  }
+
+  console.log(data);
+
+  return data || null;
+}
+
+async function saveUser(user: UserRecord) {
+  const { error } = await supabase.from("users").upsert(
+    {
+      provider_id: user.id, // e.g., google-...
+      email: user.email,
+      name: user.name,
+      picture: user.picture,
+      provider: user.provider,
+      sub_organization_id: user.sub_organization_id,
+      private_key_id: user.private_key_id,
+      wallet_address: user.wallet_address,
+      refresh_token: user.refresh_token,
+    },
+    { onConflict: "provider_id" }
+  );
+
+  if (error) {
+    console.error("Supabase error saving user:", error);
+  }
+}
 
 // ==============================================================================
 // MIDDLEWARE
@@ -131,95 +195,110 @@ interface TurnkeySubOrg {
 // ==============================================================================
 
 interface UserRecord extends UserData {
-  subOrganizationId: string;
-  privateKeyId: string;
-  walletAddress: string;
+  provider_id: string;
+  sub_organization_id: string;
+  private_key_id: string;
+  wallet_address: string;
   createdAt: number;
-  refreshToken?: string;
+  refresh_token?: string;
 }
 
 const usersDB = new Map<string, UserRecord>();
 
-function saveUser(user: UserRecord) {
-  usersDB.set(user.id, user);
-}
+// function saveUser(user: UserRecord) {
+//   usersDB.set(user.id, user);
+// }
 
 function getUserById(id: string): UserRecord | undefined {
   return usersDB.get(id);
 }
 
-function getUserByEmail(email: string): UserRecord | undefined {
-  return Array.from(usersDB.values()).find((u) => u.email === email);
-}
+// function getUserByEmail(email: string): UserRecord | undefined {
+//   return Array.from(usersDB.values()).find((u) => u.email === email);
+// }
 
 // ==============================================================================
 // TURNKEY HELPER FUNCTIONS
 // ==============================================================================
-
 async function createTurnkeySubOrganization(
   email: string,
   userName?: string
 ): Promise<TurnkeySubOrg> {
   try {
-    // Create sub-organization
-    const subOrgResponse = await turnkeyClient.createSubOrganization({
-      type: "ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V7",
-      timestampMs: String(Date.now()),
-      organizationId: config.turnkey.organizationId,
-      parameters: {
-        subOrganizationName: `user-${email}`,
-        rootUsers: [
-          {
-            userName: userName || email,
-            userEmail: email,
-            apiKeys: [],
-            authenticators: [],
-            oauthProviders: [],
+    const overallTimeoutMs = 300000; // 5 minutes – increase if needed
+
+    const withLongTimeout = <T>(promise: Promise<T>): Promise<T> => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), overallTimeoutMs);
+
+      const timeoutPromise = new Promise<T>((_, reject) => {
+        controller.signal.addEventListener("abort", () => {
+          clearTimeout(timeoutId);
+          reject(
+            new Error(
+              `Turnkey request timed out after ${overallTimeoutMs / 1000}s`
+            )
+          );
+        });
+      });
+
+      return Promise.race([promise, timeoutPromise]).finally(() =>
+        clearTimeout(timeoutId)
+      );
+    };
+
+    console.log(
+      "🔑 Creating new Turnkey sub-organization with embedded wallet..."
+    );
+
+    const response = await withLongTimeout(
+      turnkeyClient.createSubOrganization({
+        type: "ACTIVITY_TYPE_CREATE_SUB_ORGANIZATION_V7",
+        timestampMs: String(Date.now()),
+        organizationId: config.turnkey.organizationId,
+        parameters: {
+          subOrganizationName: `user-${email}`,
+          rootUsers: [
+            {
+              userName: userName || email,
+              userEmail: email,
+              apiKeys: [],
+              authenticators: [],
+              oauthProviders: [],
+            },
+          ],
+          rootQuorumThreshold: 1,
+          wallet: {
+            walletName: "Default Wallet",
+            accounts: [
+              {
+                curve: "CURVE_SECP256K1",
+                pathFormat: "PATH_FORMAT_BIP32",
+                path: "m/44'/60'/0'/0/0", // Standard ETH derivation
+                addressFormat: "ADDRESS_FORMAT_ETHEREUM",
+              },
+            ],
           },
-        ],
-        rootQuorumThreshold: 1,
-      },
-    });
+        },
+      })
+    );
 
-    const subOrgId =
-      subOrgResponse.activity.result.createSubOrganizationResultV7
-        ?.subOrganizationId;
-
+    const result = response.activity.result.createSubOrganizationResultV7;
+    const subOrgId = result?.subOrganizationId;
     if (!subOrgId) {
       throw new Error("Failed to create sub-organization");
     }
 
-    console.log("✅ Created sub-organization:", subOrgId);
-
-    // Create private key in the sub-organization
-    const privateKeyResponse = await turnkeyClient.createPrivateKeys({
-      type: "ACTIVITY_TYPE_CREATE_PRIVATE_KEYS_V2",
-      timestampMs: String(Date.now()),
-      organizationId: subOrgId,
-      parameters: {
-        privateKeys: [
-          {
-            privateKeyName: `key-${Date.now()}`,
-            curve: "CURVE_SECP256K1",
-            addressFormats: ["ADDRESS_FORMAT_ETHEREUM"],
-            privateKeyTags: [],
-          },
-        ],
-      },
-    });
-
-    const privateKeyId =
-      privateKeyResponse.activity.result.createPrivateKeysResultV2
-        ?.privateKeys?.[0]?.privateKeyId;
-    const walletAddress =
-      privateKeyResponse.activity.result.createPrivateKeysResultV2
-        ?.privateKeys?.[0]?.addresses?.[0]?.address;
-
-    if (!privateKeyId || !walletAddress) {
-      throw new Error("Failed to create private key");
+    let wallet = result?.wallet;
+    if (!wallet?.walletId || !wallet.addresses?.[0]) {
+      throw new Error("Failed to create embedded wallet");
     }
 
-    console.log("✅ Created private key:", privateKeyId);
+    const privateKeyId = wallet.walletId; // Use walletId as "privateKeyId" for your types
+    const walletAddress = wallet.addresses[0];
+
+    console.log("✅ Sub-organization created:", subOrgId);
+    console.log("✅ Embedded wallet created:", wallet.walletId);
     console.log("✅ Wallet address:", walletAddress);
 
     return {
@@ -228,11 +307,10 @@ async function createTurnkeySubOrganization(
       walletAddress: walletAddress,
     };
   } catch (error: any) {
-    console.error("❌ Turnkey error:", error.message);
+    console.error("❌ Turnkey error:", error.message || error);
     throw error;
   }
 }
-
 // ==============================================================================
 // JWT HELPER FUNCTIONS
 // ==============================================================================
@@ -425,26 +503,32 @@ app.post("/api/oauth/exchange", async (req: Request, res: Response) => {
     console.log("📧 User data from OAuth:", userData);
 
     // Check if user exists
-    let user = getUserById(userData.id);
+    let user = await getUserByProviderId(userData.id);
 
     if (!user) {
-      // Create new user - setup Turnkey sub-org
-      console.log("🔑 Creating new Turnkey sub-organization...");
+      console.log("🔑 First-time login – creating Turnkey sub-org and wallet");
       const turnkeyData = await createTurnkeySubOrganization(
         userData.email,
         userData.name
       );
 
       user = {
-        ...userData,
-        ...turnkeyData,
+        id: userData.id, // provider_id in DB
+        email: userData.email,
+        name: userData.name,
+        picture: userData.picture,
+        provider: userData.provider,
+        provider_id: "email",
+        sub_organization_id: turnkeyData?.subOrganizationId,
+        private_key_id: turnkeyData?.privateKeyId,
+        wallet_address: turnkeyData?.walletAddress,
         createdAt: Date.now(),
       };
 
-      saveUser(user);
-      console.log("✅ New user created:", user.id);
+      await saveUser(user);
+      console.log("✅ New user created and saved to Supabase:", user.id);
     } else {
-      console.log("✅ Existing user found:", user.id);
+      console.log(`✅ Returning user – reusing wallet: ${user.wallet_address}`);
     }
 
     // Generate tokens
@@ -452,7 +536,7 @@ app.post("/api/oauth/exchange", async (req: Request, res: Response) => {
     const refreshToken = generateRefreshToken(user.id);
 
     // Update refresh token
-    user.refreshToken = refreshToken;
+    user.refresh_token = refreshToken;
     saveUser(user);
 
     // Return session data
@@ -461,9 +545,9 @@ app.post("/api/oauth/exchange", async (req: Request, res: Response) => {
       email: user.email,
       name: user.name,
       picture: user.picture,
-      walletAddress: user.walletAddress,
-      turnkeyOrganizationId: user.subOrganizationId,
-      turnkeyPrivateKeyId: user.privateKeyId,
+      walletAddress: user.wallet_address,
+      turnkeyOrganizationId: user.sub_organization_id,
+      turnkeyPrivateKeyId: user.private_key_id,
       accessToken,
       refreshToken,
       expiresIn: 3600, // 1 hour
@@ -487,7 +571,8 @@ app.post("/api/auth/email/signup", async (req: Request, res: Response) => {
 
   try {
     // Check if user exists
-    if (getUserByEmail(email)) {
+
+    if (await getUserByEmail(email)) {
       return res.status(400).json({ error: "User already exists" });
     }
 
@@ -506,8 +591,11 @@ app.post("/api/auth/email/signup", async (req: Request, res: Response) => {
       email,
       name,
       provider: "email",
-      ...turnkeyData,
       createdAt: Date.now(),
+      provider_id: "email",
+      sub_organization_id: turnkeyData?.subOrganizationId,
+      private_key_id: turnkeyData?.privateKeyId,
+      wallet_address: turnkeyData?.walletAddress,
     };
 
     saveUser(user);
@@ -516,16 +604,16 @@ app.post("/api/auth/email/signup", async (req: Request, res: Response) => {
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
 
-    user.refreshToken = refreshToken;
+    user.refresh_token = refreshToken;
     saveUser(user);
 
     res.json({
       userId: user.id,
       email: user.email,
       name: user.name,
-      walletAddress: user.walletAddress,
-      turnkeyOrganizationId: user.subOrganizationId,
-      turnkeyPrivateKeyId: user.privateKeyId,
+      walletAddress: user.wallet_address,
+      turnkeyOrganizationId: user.sub_organization_id,
+      turnkeyPrivateKeyId: user.private_key_id,
       accessToken,
       refreshToken,
       expiresIn: 3600,
@@ -536,47 +624,47 @@ app.post("/api/auth/email/signup", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/api/auth/email/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+// app.post("/api/auth/email/login", async (req: Request, res: Response) => {
+//   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password required" });
-  }
+//   if (!email || !password) {
+//     return res.status(400).json({ error: "Email and password required" });
+//   }
 
-  try {
-    // Find user
-    const user = getUserByEmail(email);
-    if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
+//   try {
+//     // Find user
+//     const user = getUserByEmail(email);
+//     if (!user) {
+//       return res.status(401).json({ error: "Invalid credentials" });
+//     }
 
-    // Verify password (implement proper verification in production)
-    // const passwordHash = crypto.createHash("sha256").update(password).digest("hex");
-    // if (passwordHash !== user.passwordHash) { ... }
+//     // Verify password (implement proper verification in production)
+//     // const passwordHash = crypto.createHash("sha256").update(password).digest("hex");
+//     // if (passwordHash !== user.passwordHash) { ... }
 
-    // Generate tokens
-    const accessToken = generateAccessToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
+//     // Generate tokens
+//     const accessToken = generateAccessToken(user?.id);
+//     const refreshToken = generateRefreshToken(user?.id);
 
-    user.refreshToken = refreshToken;
-    saveUser(user);
+//     user.refresh_token = refreshToken;
+//     // saveUser(user);
 
-    res.json({
-      userId: user.id,
-      email: user.email,
-      name: user.name,
-      walletAddress: user.walletAddress,
-      turnkeyOrganizationId: user.subOrganizationId,
-      turnkeyPrivateKeyId: user.privateKeyId,
-      accessToken,
-      refreshToken,
-      expiresIn: 3600,
-    });
-  } catch (error: any) {
-    console.error("❌ Login error:", error);
-    res.status(500).json({ error: error.message || "Login failed" });
-  }
-});
+//     res.json({
+//       userId: user.id,
+//       email: user.email,
+//       name: user.name,
+//       walletAddress: user.wallet_address,
+//       turnkeyOrganizationId: user.sub_organization_id,
+//       turnkeyPrivateKeyId: user.private_key_id,
+//       accessToken,
+//       refreshToken,
+//       expiresIn: 3600,
+//     });
+//   } catch (error: any) {
+//     console.error("❌ Login error:", error);
+//     res.status(500).json({ error: error.message || "Login failed" });
+//   }
+// });
 
 // ==============================================================================
 // Token Refresh Endpoint
@@ -593,7 +681,7 @@ app.post("/api/auth/refresh", (req: Request, res: Response) => {
     const { userId } = verifyToken(refreshToken);
     const user = getUserById(userId);
 
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user || user.refresh_token !== refreshToken) {
       return res.status(401).json({ error: "Invalid refresh token" });
     }
 
@@ -601,8 +689,8 @@ app.post("/api/auth/refresh", (req: Request, res: Response) => {
     const newAccessToken = generateAccessToken(userId);
     const newRefreshToken = generateRefreshToken(userId);
 
-    user.refreshToken = newRefreshToken;
-    saveUser(user);
+    user.refresh_token = newRefreshToken;
+    // saveUser(user);
 
     res.json({
       accessToken: newAccessToken,
@@ -650,7 +738,7 @@ app.get("/api/user/profile", authenticate, (req: Request, res: Response) => {
     name: user.name,
     picture: user.picture,
     provider: user.provider,
-    walletAddress: user.walletAddress,
+    walletAddress: user.wallet_address,
     createdAt: user.createdAt,
   });
 });

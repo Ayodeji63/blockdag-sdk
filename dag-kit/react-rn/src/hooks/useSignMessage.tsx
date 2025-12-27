@@ -15,24 +15,16 @@ export function useSignMessage() {
     }
 
     setIsSigning(true);
-
     try {
       const signature = await walletClient.signMessage({
         account: walletClient.account!,
         message,
       });
-
       return signature;
-    } catch (error) {
-      console.error("Failed to sign message:", error);
-      throw error;
     } finally {
       setIsSigning(false);
     }
   };
 
-  return {
-    signMessage,
-    isSigning,
-  };
+  return { signMessage, isSigning };
 }
