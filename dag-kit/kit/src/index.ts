@@ -14,3 +14,4 @@ export { PrivateKeySigner } from "./signers/PrivateKeySigner.js";
 
 // Re-export commonly used viem types for convenience
 export type { Address, Hash, Chain } from "viem";
+export type { ISigner } from "./signers/types.js";
