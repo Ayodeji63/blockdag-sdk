@@ -63,12 +63,13 @@
     "test:run": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@dag-kit/kit": "file:../kit/dag-kit-kit-1.0.4-alpha.2.tgz",
     "@turnkey/api-key-stamper": "^0.5.0",
     "@turnkey/http": "^3.16.0",
     "@turnkey/iframe-stamper": "^2.9.0",
     "@turnkey/viem": "^0.14.20",
     "@turnkey/webauthn-stamper": "^0.6.0",
-    "@dag-kit/kit": "file:../kit/dag-kit-kit-1.0.4-alpha.2.tgz"
+    "viem": "2.28.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.10",
