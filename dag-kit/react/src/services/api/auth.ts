@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:5000/api";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -20,12 +19,17 @@ export const initEmailAuth = async ({
   targetPublicKey: string;
   baseUrl?: string;
 }) => {
-  const { data } = await apiClient.post("/auth/email/init", {
-    email,
-    targetPublicKey,
-    baseUrl,
-  });
-  return data;
+  try {
+    const { data } = await apiClient.post("/auth/email/init", {
+      email,
+      targetPublicKey,
+      baseUrl,
+    });
+    return data;
+  } catch (error) {
+    console.error("initEmailAuth error:", error);
+    throw error;
+  }
 };
 
 // Verify OTP
@@ -43,6 +47,7 @@ export const verifyOtp = async ({
     otpCode,
     publicKey,
   });
+  console.log("verifyOtp data:", data);
   return data;
 };
 

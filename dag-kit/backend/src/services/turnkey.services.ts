@@ -1,4 +1,4 @@
-import { awakening } from "@dag-kit/kit";
+import { awakening, createDagAAClient } from "@dag-kit/kit";
 import {
   ApiKeyStamper,
   DEFAULT_ETHEREUM_ACCOUNTS,
@@ -14,16 +14,23 @@ import {
   http,
   parseEther,
 } from "viem";
-import { getDagClient, getTurnkeyWalletClient } from "../lib/web3";
+import dotenv from "dotenv";
+dotenv.config();
+
+export const getDagClient = () => {
+  return createDagAAClient({
+    chain: awakening.chain_config,
+    rpcUrl: "https://relay.awakening.bdagscan.com",
+    bundlerUrl: awakening.bundler_rpc,
+    factoryAddress: "0x8FaB6DF00085eb05D5F2C1FA46a6E539587ae3f3",
+    paymasterUrl: "http://localhost:3001/rpc", // or env var
+  });
+};
 
 const {
   TURNKEY_API_PUBLIC_KEY,
   TURNKEY_API_PRIVATE_KEY,
   TURNKEY_ORGANIZATION_ID,
-  TURNKEY_WARCHEST_API_PUBLIC_KEY,
-  TURNKEY_WARCHEST_API_PRIVATE_KEY,
-  TURNKEY_WARCHEST_ORGANIZATION_ID,
-  WARCHEST_PRIVATE_KEY_ID,
   TURNKEY_API_BASE_URL,
   BASE_URL,
 } = process.env;
@@ -457,29 +464,29 @@ export const getAuthenticator = async (
   return authenticator;
 };
 
-export const fundWallet = async (address: Address) => {
-  const value = parseEther("0.001");
+// export const fundWallet = async (address: Address) => {
+//   const value = parseEther("0.001");
 
-  const warchestStamper = new ApiKeyStamper({
-    apiPublicKey: TURNKEY_WARCHEST_API_PUBLIC_KEY!,
-    apiPrivateKey: TURNKEY_WARCHEST_API_PRIVATE_KEY!,
-  });
+//   const warchestStamper = new ApiKeyStamper({
+//     apiPublicKey: TURNKEY_WARCHEST_API_PUBLIC_KEY!,
+//     apiPrivateKey: TURNKEY_WARCHEST_API_PRIVATE_KEY!,
+//   });
 
-  const warchestClient = new TurnkeyServerClient({
-    apiBaseUrl: TURNKEY_API_BASE_URL || "https://api.turnkey.com",
-    organizationId: TURNKEY_WARCHEST_ORGANIZATION_ID!,
-    stamper: warchestStamper,
-  });
+//   const warchestClient = new TurnkeyServerClient({
+//     apiBaseUrl: TURNKEY_API_BASE_URL || "https://api.turnkey.com",
+//     organizationId: TURNKEY_WARCHEST_ORGANIZATION_ID!,
+//     stamper: warchestStamper,
+//   });
 
-  const walletClient = await getTurnkeyWalletClient(
-    warchestClient,
-    WARCHEST_PRIVATE_KEY_ID!
-  );
+//   const walletClient = await getTurnkeyWalletClient(
+//     warchestClient,
+//     WARCHEST_PRIVATE_KEY_ID!
+//   );
 
-  const txHash = await walletClient.sendTransaction({
-    to: address,
-    value,
-  });
+//   const txHash = await walletClient.sendTransaction({
+//     to: address,
+//     value,
+//   });
 
-  return txHash;
-};
+//   return txHash;
+// };

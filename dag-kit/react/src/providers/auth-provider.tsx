@@ -13,7 +13,7 @@ import { AuthClient, Session, SessionType } from "@turnkey/sdk-browser";
 import { useTurnkey } from "@turnkey/sdk-react";
 import { WalletType } from "@turnkey/wallet-stamper";
 import { toHex } from "viem";
-import * as authApi from "../services/api/auth";
+import * as authApi from "@/services/api/auth";
 import {
   getOtpIdFromStorage,
   removeOtpIdFromStorage,
@@ -35,8 +35,8 @@ interface UserSession {
 
 export const loginResponseToUser = (
   loginResponse: {
-    orgnaizationId: string;
-    orgnizationName: string;
+    organizationId: string;
+    organizationName: string;
     userId: string;
     username: string;
     session?: string;
@@ -45,18 +45,9 @@ export const loginResponseToUser = (
   authClient: AuthClient
 ): UserSession => {
   const subOrganization = {
-    organizationId: loginResponse.orgnaizationId,
-    organizationName: loginResponse.orgnizationName,
+    organizationId: loginResponse.organizationId,
+    organizationName: loginResponse.organizationName,
   };
-
-  let read: Session | undefined;
-  if (loginResponse.session) {
-    // @ts-expect-error - Turnkey SDK types are not up to date
-    read = {
-      token: loginResponse.session,
-      expiry: Number(loginResponse.sessionExpiry),
-    };
-  }
 
   return {
     id: loginResponse.userId,
@@ -79,16 +70,16 @@ type AuthActionType =
 
 interface AuthState {
   loading: boolean;
-  error: string | null;
-  sessionExpiring: boolean;
+  error: string;
   user: UserSession | null;
+  sessionExpiring: boolean;
 }
 
 const initialState: AuthState = {
   loading: false,
-  error: null,
-  sessionExpiring: false,
+  error: "",
   user: null,
+  sessionExpiring: false,
 };
 
 function authReducer(state: AuthState, action: AuthActionType): AuthState {
@@ -122,26 +113,26 @@ const AuthContext = createContext<{
     credentialBundle: string;
   }) => Promise<void>;
   loginWithPasskey: (email?: Email) => Promise<void>;
-  //   loginWithWallet: () => Promise<void>;
+  loginWithWallet: () => Promise<void>;
   loginWithOAuth: (credential: string, providerName: string) => Promise<void>;
   loginWithGoogle: (credential: string) => Promise<void>;
-  //   loginWithApple: (credential: string) => Promise<void>;
-  //   loginWithFacebook: (credential: string) => Promise<void>;
+  loginWithApple: (credential: string) => Promise<void>;
+  loginWithFacebook: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
 }>({
   state: initialState,
   initEmailLogin: async () => {},
   completeEmailAuth: async () => {},
   loginWithPasskey: async () => {},
-  //   loginWithWallet: async () => {},
+  loginWithWallet: async () => {},
   loginWithOAuth: async () => {},
   loginWithGoogle: async () => {},
-  //   loginWithApple: async () => {},
-  //   loginWithFacebook: async () => {},
+  loginWithApple: async () => {},
+  loginWithFacebook: async () => {},
   logout: async () => {},
 });
 
-const SESSION_EXPIRING = "900";
+const SESSION_EXPIRY = "900";
 const WARNING_BUFFER = 30;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -149,7 +140,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const { turnkey, indexedDbClient, passkeyClient, walletClient } =
     useTurnkey();
-  const warningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const warningTimeoutRef = useRef<NodeJS.Timeout>();
+  console.log("Turnkey hook values:", {
+    turnkey,
+    indexedDbClient,
+    passkeyClient,
+    walletClient,
+  });
 
   const initEmailLogin = async (email: Email) => {
     dispatch({ type: "LOADING", payload: true });
@@ -157,7 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const publicKey = await indexedDbClient?.getPublicKey();
       if (!publicKey) {
-        throw new Error("Public key not found in IndexedDB");
+        throw new Error("No public key found");
       }
 
       const targetPublicKey = toHex(
@@ -175,7 +172,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (response) {
-        console.log("Email auth initialized:", response);
         if (response.otpId) {
           setOtpIdInStorage(response.otpId);
         }
@@ -204,12 +200,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const publicKeyCompressed = await indexedDbClient?.getPublicKey();
         if (!publicKeyCompressed) {
-          throw new Error("Public key not found in IndexedDB");
+          throw new Error("No public key found");
         }
 
         const storedOtpId = getOtpIdFromStorage();
         if (!storedOtpId) {
-          throw new Error("OTP ID not found in storage");
+          throw new Error("OTP identifier not found. Please restart sign-in.");
         }
 
         const authResponse = await authApi.verifyOtp({
@@ -225,11 +221,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
 
         await indexedDbClient?.loginWithSession(session || "");
-
         removeOtpIdFromStorage();
 
-        const expiryTime = Date.now() + parseInt(SESSION_EXPIRING) * 1000;
-
+        const expiryTime = Date.now() + parseInt(SESSION_EXPIRY) * 1000;
         scheduleSessionWarning(expiryTime);
 
         setSessionInStorage({
@@ -253,7 +247,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const loginWithPasskey = async (email?: Email) => {
-    // Implementation here
     dispatch({ type: "LOADING", payload: true });
     try {
       const { subOrgId } = await authApi.getSubOrgId({ email: email as Email });
@@ -262,7 +255,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await indexedDbClient?.resetKeyPair();
         const publicKey = await indexedDbClient!.getPublicKey();
         await passkeyClient?.loginWithPasskey({
-          SessionType: SessionType.READ_WRITE,
+          sessionType: SessionType.READ_WRITE,
           publicKey,
         });
 
@@ -283,24 +276,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             email: email as Email,
             passkey: {
               challenge: encodedChallenge,
-              attestation: attestation,
+              attestation,
             },
           });
 
-          if (subOrg?.id && user?.id) {
+          if (subOrg && user) {
             setSessionInStorage(
               loginResponseToUser(
                 {
                   userId: user.userId,
-                  username: user.username,
-                  orgnaizationId: subOrg.id,
-                  orgnizationName: "",
+                  username: user.userName,
+                  organizationId: subOrg.subOrganizationId,
+                  organizationName: "",
                   session: undefined,
                   sessionExpiry: undefined,
                 },
                 AuthClient.Passkey
               )
             );
+
             navigate("/dashboard");
           }
         }
@@ -317,18 +311,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const loginWithOAuth = async (credential: string, providerName: string) => {
+  const loginWithWallet = async () => {
     dispatch({ type: "LOADING", payload: true });
 
     try {
-      // Get Public Key Compressed
+      await indexedDbClient?.resetKeyPair();
+      const publicKey = await indexedDbClient?.getPublicKey();
+      const walletPublicKey = await walletClient?.getPublicKey();
+
+      if (!publicKey || !walletPublicKey) {
+        throw new Error("No public key found");
+      }
+
+      let { subOrgId } = await authApi.getSubOrgId({
+        publicKey: walletPublicKey,
+      });
+
+      if (!subOrgId) {
+        const { subOrg } = await authApi.createUserSubOrg({
+          wallet: {
+            publicKey: walletPublicKey,
+            type: WalletType.Ethereum,
+          },
+        });
+        subOrgId = subOrg.subOrganizationId;
+      }
+
+      await walletClient?.loginWithWallet({
+        publicKey,
+        sessionType: SessionType.READ_WRITE,
+      });
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      dispatch({ type: "ERROR", payload: error.message });
+    } finally {
+      dispatch({ type: "LOADING", payload: false });
+    }
+  };
+
+  const loginWithOAuth = async (credential: string, providerName: string) => {
+    dispatch({ type: "LOADING", payload: true });
+    try {
       const publicKeyCompressed = await indexedDbClient?.getPublicKey();
 
-      // Validate Public Key Compressed
       if (!publicKeyCompressed) {
         throw new Error("No public key found");
       }
-      // Convert to Uncompressed
+
       const publicKey = toHex(
         uncompressRawPublicKey(
           new Uint8Array(Buffer.from(publicKeyCompressed, "hex"))
@@ -341,7 +371,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { subOrg } = await authApi.createUserSubOrg({
           oauth: {
             oidcToken: credential,
-            providerName: providerName,
+            providerName,
           },
         });
         subOrgId = subOrg.subOrganizationId;
@@ -353,10 +383,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         subOrgId,
       });
 
-      await indexedDbClient?.loginWithSession(oauthResponse.session || "");
+      await indexedDbClient?.loginWithSession(oauthResponse.session);
 
       navigate("/dashboard");
-    } catch (error) {}
+    } catch (error: any) {
+      dispatch({ type: "ERROR", payload: error.message });
+    } finally {
+      dispatch({ type: "LOADING", payload: false });
+    }
+  };
+
+  const loginWithGoogle = async (credential: string) => {
+    await loginWithOAuth(credential, "Google Auth - Embedded Wallet");
+  };
+
+  const loginWithApple = async (credential: string) => {
+    await loginWithOAuth(credential, "Apple Auth - Embedded Wallet");
+  };
+
+  const loginWithFacebook = async (credential: string) => {
+    await loginWithOAuth(credential, "Facebook Auth - Embedded Wallet");
   };
 
   const logout = async () => {
@@ -367,7 +413,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const scheduleSessionWarning = (expiryTime: number) => {
-    // Clear any existing timeout
     if (warningTimeoutRef.current) {
       clearTimeout(warningTimeoutRef.current);
     }
@@ -380,18 +425,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       warningTimeoutRef.current = setTimeout(() => {
         dispatch({ type: "SESSION_EXPIRING", payload: true });
 
-        // Reset the warning after session actually expires
         const resetTimeout = setTimeout(() => {
           dispatch({ type: "SESSION_EXPIRING", payload: false });
         }, WARNING_BUFFER * 1000);
 
-        // Clean up reset timeout on unmount
         return () => clearTimeout(resetTimeout);
       }, timeUntilWarning);
     }
   };
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       if (warningTimeoutRef.current) {
@@ -406,6 +448,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         state,
         initEmailLogin,
         completeEmailAuth,
+        loginWithPasskey,
+        loginWithWallet,
+        loginWithOAuth,
+        loginWithGoogle,
+        loginWithApple,
+        loginWithFacebook,
         logout,
       }}
     >
@@ -413,3 +461,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

@@ -6,6 +6,7 @@ const router = express.Router();
 // Initialize email authentication
 router.post("/email/init", async (req, res) => {
   try {
+    console.log("Received /email/init request with body:", req.body);
     const { email, targetPublicKey, baseUrl } = req.body;
 
     if (!email || !targetPublicKey) {
