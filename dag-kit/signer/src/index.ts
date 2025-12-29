@@ -10,7 +10,7 @@ import {
 } from "viem";
 import { TurnkeyClient } from "@turnkey/http";
 import { createAccount } from "@turnkey/viem";
-import { ISigner } from "./types";
+import { ISigner } from "./types.js";
 import { IframeStamper } from "@turnkey/iframe-stamper";
 
 export interface TurnkeySignerConfig {
@@ -70,7 +70,7 @@ export class TurnkeySigner implements ISigner {
 
       this.walletClient = createWalletClient({
         account: this.account,
-        chain: this.chain || null,
+        chain: this.chain!,
         transport: http(this.rpcUrl),
       });
       this.isConnected = true;
