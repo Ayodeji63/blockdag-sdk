@@ -31,13 +31,8 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 function AuthContent() {
-  const {
-    httpClient,
-    loginWithPasskey,
-    user,
-    loginOrSignupWithWallet,
-    getWalletProviders,
-  } = useTurnkey();
+  const { httpClient, loginWithPasskey, user, loginOrSignupWithWallet } =
+    useTurnkey();
 
   const { state } = useAuth();
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
@@ -93,18 +88,15 @@ function AuthContent() {
   const handleEmailLogin = async (email: Email) => {
     setLoadingAction("email");
     try {
+      // await initEmailLogin(email);
+
       await initEmailLogin(email);
-      // navigate(`/verify-email?email=${encodeURIComponent(email)}&type=email`);
-      // const init = await httpClient?.proxyInitOtp({
-      //   otpType: "OTP_TYPE_EMAIL",
-      //   contact: email,
-      // });
-      // if (init?.otpId) {
-      //   navigate(
-      //     `/verify-email?id=${encodeURIComponent(init.otpId)}&email=${encodeURIComponent(
-      //       email
-      //     )}&type=email`
-      //   );
+      // if (init) {
+      // navigate(
+      //   `/verify-email?id=${encodeURIComponent(init)}&email=${encodeURIComponent(
+      //     email
+      //   )}&type=email`
+      // );
       // }
     } finally {
       setLoadingAction(null);
@@ -115,10 +107,10 @@ function AuthContent() {
     setWalletDialogOpen(true);
     setIsLoadingProviders(true);
     try {
-      const providers = await getWalletProviders();
-      setWalletProviders(
-        providers.filter((p) => p.interfaceType !== "solana") ?? []
-      );
+      // const providers = await getWalletProviders();
+      // setWalletProviders(
+      //   providers.filter((p) => p.interfaceType !== "solana") ?? []
+      // );
     } finally {
       setIsLoadingProviders(false);
     }

@@ -2,16 +2,16 @@ import { TurnkeyProviderConfig } from "@turnkey/react-wallet-kit";
 
 import { env } from "@/env";
 
-const {
-  VITE_PUBLIC_ORGANIZATION_ID,
-  VITE_PUBLIC_BASE_URL,
-  VITE_PUBLIC_AUTH_PROXY_URL,
-  VITE_PUBLIC_GOOGLE_OAUTH_CLIENT_ID,
-  VITE_PUBLIC_APPLE_OAUTH_CLIENT_ID,
-  VITE_PUBLIC_FACEBOOK_CLIENT_ID,
-  VITE_PUBLIC_AUTH_PROXY_ID,
-  VITE_PUBLIC_APP_URL,
-} = env;
+// const {
+//   import.meta.env.VITE_PUBLIC_ORGANIZATION_ID,
+//   import.meta.env.VITE_PUBLIC_BASE_URL,
+//   import.meta.env.VITE_PUBLIC_AUTH_PROXY_URL,
+//   import.meta.env.VITE_PUBLIC_GOOGLE_OAUTH_CLIENT_ID,
+//   import.meta.env.VITE_PUBLIC_APPLE_OAUTH_CLIENT_ID,
+//   import.meta.env.VITE_PUBLIC_FACEBOOK_CLIENT_ID,
+//   import.meta.env.VITE_PUBLIC_AUTH_PROXY_ID,
+//   import.meta.env.VITE_PUBLIC_APP_URL,
+// } = env;
 
 export const customWallet = {
   walletName: "Default Wallet",
@@ -25,18 +25,28 @@ export const customWallet = {
   ],
 };
 
+const orgId = import.meta.env.VITE_PUBLIC_ORGANIZATION_ID;
+console.log("Using Turnkey Organization ID:", orgId);
+
+if (!orgId) {
+  console.warn(
+    "Warning: VITE_PUBLIC_ORGANIZATION_ID is not set. Please set it in your environment variables."
+  );
+}
+
 export const turnkeyConfig: TurnkeyProviderConfig = {
-  organizationId: VITE_PUBLIC_ORGANIZATION_ID,
-  authProxyConfigId: VITE_PUBLIC_AUTH_PROXY_ID,
-  authProxyUrl: VITE_PUBLIC_AUTH_PROXY_URL,
-  apiBaseUrl: VITE_PUBLIC_BASE_URL,
+  organizationId: import.meta.env.VITE_PUBLIC_ORGANIZATION_ID,
+
+  authProxyConfigId: import.meta.env.VITE_PUBLIC_AUTH_PROXY_ID,
+  authProxyUrl: import.meta.env.VITE_PUBLIC_AUTH_PROXY_URL,
+  apiBaseUrl: import.meta.env.VITE_PUBLIC_BASE_URL,
   auth: {
     autoRefreshSession: true,
     oauthConfig: {
-      oauthRedirectUri: VITE_PUBLIC_APP_URL,
-      googleClientId: VITE_PUBLIC_GOOGLE_OAUTH_CLIENT_ID,
-      appleClientId: VITE_PUBLIC_APPLE_OAUTH_CLIENT_ID,
-      facebookClientId: VITE_PUBLIC_FACEBOOK_CLIENT_ID,
+      oauthRedirectUri: "https://auth.turnkey.com/oauth/callback",
+      googleClientId: import.meta.env.VITE_PUBLIC_GOOGLE_OAUTH_CLIENT_ID,
+      appleClientId: import.meta.env.VITE_PUBLIC_APPLE_OAUTH_CLIENT_ID,
+      facebookClientId: import.meta.env.VITE_PUBLIC_FACEBOOK_CLIENT_ID,
     },
     createSuborgParams: {
       passkeyAuth: {

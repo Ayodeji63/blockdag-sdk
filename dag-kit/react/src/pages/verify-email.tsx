@@ -20,6 +20,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Icons } from "@/components/icons";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function VerifyEmailPage() {
   return (
@@ -33,8 +34,10 @@ function VerifyEmailContent() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { httpClient, signUpWithPasskey, completeOtp } = useTurnkey();
+  const { completeEmailAuth } = useAuth();
 
-  const otpId = searchParams.get("otp_id") || "";
+  const otpId = searchParams.get("id") || "";
+  console.log("OTP ID from URL:", otpId);
   const email = searchParams.get("email") || "";
   const type = (searchParams.get("type") || "").toLowerCase();
 
@@ -44,11 +47,11 @@ function VerifyEmailContent() {
   const isSixDigits = useMemo(() => code.length === 6, [code]);
 
   const handleVerify = useCallback(async () => {
-    if (!otpId || !email || (type !== "passkey" && type !== "email")) {
-      toast.error("Missing verification context. Please restart sign in");
-      navigate("/");
-      return;
-    }
+    // if (!otpId || !email || (type !== "passkey" && type !== "email")) {
+    //   toast.error("Missing verification context. Please restart sign in");
+    //   navigate("/");
+    //   return;
+    // }
 
     try {
       setSubmitting(true);
@@ -72,16 +75,20 @@ function VerifyEmailContent() {
         });
         navigate("/dashboard");
       } else if (type === "email") {
-        await completeOtp({
-          otpId,
-          otpCode: code,
-          contact: email,
-          otpType: OtpType.Email,
-          createSubOrgParams: {
-            customWallet,
-            userEmail: email,
-          },
-        });
+        console.log("Completing OTP for email type");
+        // const complete = await completeOtp({
+        //   otpId,
+        //   otpCode: code,
+        //   contact: email,
+        //   otpType: OtpType.Email,
+        //   createSubOrgParams: {
+        //     customWallet,
+        //     userEmail: email,
+        //   },
+        // });
+        const params = { otpId, code, email };
+        const res = await completeEmailAuth(params);
+        console.log("OTP completed successfully for email", res);
         navigate("/dashboard");
       }
     } catch (err: any) {

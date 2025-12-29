@@ -1,21 +1,33 @@
-import { TurnkeyProvider } from "@turnkey/react-wallet-kit";
-
-import { turnkeyConfig } from "@/config/turnkey";
-
+import {
+  TurnkeyProvider,
+  TurnkeyProviderConfig,
+} from "@turnkey/react-wallet-kit";
+// import { turnkeyConfig } from "@/config/turnkey";
 import { AuthProvider } from "./auth-provider";
 
 export const Providers: React.FC<{ children: React.ReactNode }> = ({
   children,
-}) => (
-  <TurnkeyProvider
-    config={turnkeyConfig}
-    callbacks={{
-      onSessionExpired: () => {
-        console.log("Session expired. Please log in again.");
-        // Optionally, you can redirect the user to the login page or show a modal
-      },
-    }}
-  >
-    <AuthProvider> {children}</AuthProvider>
-  </TurnkeyProvider>
-);
+}) => {
+  const turnkeyConfig: TurnkeyProviderConfig = {
+    organizationId: import.meta.env.VITE_PUBLIC_ORGANIZATION_ID!,
+    authProxyConfigId: import.meta.env.VITE_PUBLIC_AUTH_PROXY_ID!,
+  };
+
+  console.log("Turnkey Config Provider:", turnkeyConfig);
+
+  return (
+    <TurnkeyProvider
+      config={turnkeyConfig}
+      callbacks={{
+        onSessionExpired: () => {
+          console.log("Session expired. Please log in again.");
+        },
+        onError: (error) => {
+          console.error("❌ Turnkey Provider Error:", error);
+        },
+      }}
+    >
+      <AuthProvider>{children}</AuthProvider>
+    </TurnkeyProvider>
+  );
+};
