@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from "./dialog";
 import { Button } from "./ui/button";
+import { BlockDagIcon } from "./icons";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -143,12 +144,11 @@ function AuthContent() {
         <CardHeader className="space-y-4">
           <div className="relative flex items-center justify-center gap-2">
             {/* <Icons.turnkey className="h-16 w-full stroke-0 py-2" /> */}
-            <Badge
-              variant="secondary"
-              className="border-primary bg-primary/0 text-primary absolute -right-1 px-1 py-0.5 text-xs sm:top-4 sm:right-9"
-            >
-              Demo
-            </Badge>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-16 h-16">
+                <BlockDagIcon />
+              </div>
+            </div>
           </div>
           <CardTitle className="text-center text-xl font-medium">
             Log in or sign up

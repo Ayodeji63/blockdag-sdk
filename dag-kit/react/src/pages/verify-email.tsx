@@ -19,7 +19,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Icons } from "@/components/icons";
+import { BlockDagIcon } from "@/components/icons";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function VerifyEmailPage() {
@@ -89,7 +89,6 @@ function VerifyEmailContent() {
         const params = { otpId, code, email };
         const res = await completeEmailAuth(params);
         console.log("OTP completed successfully for email", res);
-        navigate("/dashboard");
       }
     } catch (err: any) {
       const message: string = err?.message || "Verification error";
@@ -107,7 +106,12 @@ function VerifyEmailContent() {
     <main className="flex w-full flex-col items-center justify-center">
       <Card className="mx-auto w-full max-w-[450px]">
         <CardHeader className="space-y-4">
-          <Icons.turnkey className="h-16 w-full stroke-0 py-2" />
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-16 h-16">
+              <BlockDagIcon />
+            </div>
+          </div>
+
           <CardTitle className="text-center text-xl font-medium">
             Please verify your email
           </CardTitle>

@@ -70,7 +70,7 @@ export class TurnkeySigner implements ISigner {
 
       this.walletClient = createWalletClient({
         account: this.account,
-        chain: this.chain!,
+        chain: this.chain,
         transport: http(this.rpcUrl),
       });
       this.isConnected = true;
@@ -87,6 +87,67 @@ export class TurnkeySigner implements ISigner {
     this.turnkeyClient = null;
     this.isConnected = false;
     console.log("Turnkey singer disconnected");
+  }
+
+  private async whoami(subOrg: string): Promise<any> {
+    try {
+      const res = await this.turnkeyClient?.getWhoami({
+        organizationId: subOrg,
+      });
+
+      // organizationId: string;
+      // organizationName: string;
+      // userId: string;
+      // username: string;
+      console.log("User ID:", res?.userId);
+      console.log("Organization ID:", res?.organizationId);
+      console.log("Username:", res?.username);
+      return res;
+    } catch (error) {}
+  }
+
+  async _createApiKeys(subOrg: string): Promise<any> {
+    if (!this.turnkeyClient) {
+      throw new Error("Turnkey client not initialized");
+    }
+
+    try {
+      // ✅ Get the userId from the SUB-ORG, not the parent
+      const { userId } = await this.whoami(subOrg);
+      const { generateP256KeyPair } = await import("@turnkey/crypto");
+      const keyPair = generateP256KeyPair();
+
+      if (!userId) {
+        throw Error("UserId not found in sub-organization");
+      }
+
+      const res = await this.turnkeyClient.createApiKeys({
+        type: "ACTIVITY_TYPE_CREATE_API_KEYS_V2",
+        timestampMs: String(Date.now()),
+        organizationId: subOrg,
+        parameters: {
+          apiKeys: [
+            {
+              apiKeyName: `SubOrg-API-Key-${Date.now()}`,
+              publicKey: keyPair.publicKey,
+              curveType: "API_KEY_CURVE_P256",
+            },
+          ],
+          userId: userId, // ✅ userId from the sub-org
+        },
+      });
+
+      console.log("API Keys created:", res);
+
+      return {
+        apiKeyId: res.activity.result.createApiKeysResult?.apiKeyIds?.[0],
+        privateKey: keyPair.privateKey,
+        publicKey: keyPair.publicKey,
+      };
+    } catch (error) {
+      console.error("Failed to create sub-org API keys:", error);
+      throw error;
+    }
   }
 
   private async createPrivateKey(): Promise<string> {
@@ -110,6 +171,8 @@ export class TurnkeySigner implements ISigner {
           ],
         },
       });
+
+      console.log("Private key creation response:", response);
 
       const privateKeyId =
         response.activity.result.createPrivateKeysResultV2?.privateKeys?.[0]

@@ -23,7 +23,8 @@ import {
   setSessionInStorage,
 } from "@/lib/storage";
 import { customWallet } from "@/config/turnkey";
-
+import { createApiKeyStamper, createTurnkeySigner } from "@dag-kit/signer";
+import { awakening, createDagAAClient } from "@dag-kit/kit";
 type Email = string;
 
 interface UserSession {
@@ -109,12 +110,13 @@ function authReducer(state: AuthState, action: AuthActionType): AuthState {
 
 const AuthContext = createContext<{
   state: AuthState;
-  initEmailLogin: (email: Email) => Promise<void>;
+  initEmailLogin: (email: Email) => Promise<any>;
   completeEmailAuth: (params: {
     otpId: string;
     code: string;
     email: string;
   }) => Promise<any>;
+  createSmartAccount: (subOrg: string) => Promise<any>;
   // loginWithPasskey: (email?: Email) => Promise<void>;
   // loginWithWallet: () => Promise<void>;
   // loginWithOAuth: (credential: string, providerName: string) => Promise<void>;
@@ -133,6 +135,7 @@ const AuthContext = createContext<{
   // loginWithApple: async () => {},
   // loginWithFacebook: async () => {},
   handleLogout: async () => {},
+  createSmartAccount: async () => {},
 });
 
 const SESSION_EXPIRY = "900";
@@ -142,6 +145,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const navigate = useNavigate();
   const { initOtp, completeOtp, verifyOtp, logout } = useTurnkey();
+  const [client, setClient] = useState(null);
 
   const warningTimeoutRef = useRef<NodeJS.Timeout>();
   const [isInitialized, setIsInitialized] = useState(false);
@@ -156,18 +160,170 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         contact: email,
       });
 
-      if (init) {
-        navigate(
-          `/verify-email?id=${encodeURIComponent(init)}&email=${encodeURIComponent(
-            email
-          )}&type=email`
-        );
-      }
+      // if (init) {
+      //   navigate(
+      //     `/verify-email?id=${encodeURIComponent(init)}&email=${encodeURIComponent(
+      //       email
+      //     )}&type=email`
+      //   );
+      // }
       dispatch({ type: "INIT_EMAIL_AUTH" });
+
+      return encodeURIComponent(init);
     } catch (error: any) {
       dispatch({ type: "ERROR", payload: error.message });
     } finally {
       dispatch({ type: "LOADING", payload: false });
+    }
+  };
+  const createSmartAccount = async (subOrgId: string) => {
+    try {
+      // Validate subOrgId first
+      if (!subOrgId || subOrgId.trim() === "") {
+        throw new Error("Invalid sub-organization ID provided");
+      }
+
+      // Get API credentials (these are for the parent org)
+      const PUBLIC_KEY =
+        import.meta.env.VITE_TURNKEY_PUBLIC_KEY ||
+        "0274c3a3f0c5dbd9737d39628af4615ceb799df320a9f8816e716254b40f387678";
+      const PRIVATE_KEY =
+        import.meta.env.VITE_TURNKEY_PRIVATE_KEY ||
+        "72ae2bd2ed49396c8c365437efd7c0b852e3d57d87a3a7ddd39b017a8812ce8b";
+      const PARENT_ORG_ID =
+        import.meta.env.VITE_TURNKEY_ORG_ID ||
+        "1381ab26-7197-4e84-ad74-d06963b50de7";
+
+      if (!PUBLIC_KEY || !PRIVATE_KEY || !PARENT_ORG_ID) {
+        throw new Error(
+          "Missing required environment variables: PUBLIC_KEY, PRIVATE_KEY, or ORG_ID"
+        );
+      }
+
+      console.log(
+        "🔑 Public Key (first 10 chars):",
+        PUBLIC_KEY.substring(0, 10)
+      );
+      console.log(
+        "🔑 Private Key (first 10 chars):",
+        PRIVATE_KEY.substring(0, 10)
+      );
+      console.log("🏢 Parent Organization ID:", PARENT_ORG_ID);
+      console.log("🏢 Sub-organization ID:", subOrgId);
+
+      // Validate key formats
+      if (PUBLIC_KEY.length !== 66) {
+        throw new Error(
+          `Invalid public key length: ${PUBLIC_KEY.length} (expected 66)`
+        );
+      }
+
+      if (PRIVATE_KEY.length !== 64) {
+        throw new Error(
+          `Invalid private key length: ${PRIVATE_KEY.length} (expected 64)`
+        );
+      }
+
+      if (!PUBLIC_KEY.startsWith("02") && !PUBLIC_KEY.startsWith("03")) {
+        throw new Error(
+          "Invalid public key format: must start with 02 or 03 (compressed format)"
+        );
+      }
+
+      // Create stamper (uses parent org credentials)
+      console.log("📝 Creating API Key Stamper...");
+      const stamper = await createApiKeyStamper(PUBLIC_KEY, PRIVATE_KEY);
+      console.log("✅ Stamper created successfully");
+
+      if (!stamper || typeof stamper.stamp !== "function") {
+        throw new Error("Invalid stamper object created");
+      }
+
+      // ✅✅✅ CRITICAL FIX: Use SUB-ORG ID, not parent ORG_ID
+      console.log("🔐 Creating Turnkey Signer...");
+      const turnkeySigner = createTurnkeySigner({
+        chain: awakening.chain_config,
+        rpcUrl: "https://relay.awakening.bdagscan.com",
+        turnkeyConfig: {
+          baseUrl: "https://api.turnkey.com",
+          organizationId: PARENT_ORG_ID, // ✅ Use subOrgId here!
+          stamper: stamper,
+        },
+      });
+
+      console.log("🔗 Connecting to Turnkey...");
+      await turnkeySigner.connect();
+      console.log("✅ Turnkey connected successfully");
+
+      const signerAddress = await turnkeySigner.getAddress();
+      console.log("📍 Signer Address:", signerAddress);
+
+      // Create DAG AA Client
+      console.log("🚀 Creating DAG AA Client...");
+      const dagClient = createDagAAClient({
+        chain: awakening.chain_config,
+        rpcUrl: "https://relay.awakening.bdagscan.com",
+        bundlerUrl: "http://localhost:3000",
+        paymasterUrl: "http://localhost:3001/rpc",
+        factoryAddress: "0x8FaB6DF00085eb05D5F2C1FA46a6E539587ae3f3",
+      });
+
+      // Connect smart account
+      console.log("💼 Connecting Smart Account...");
+      const smartAccountAddress = await dagClient.connectSmartAccount({
+        signer: turnkeySigner,
+      });
+
+      console.log("✅ Smart Account Address:", smartAccountAddress);
+
+      // Check deployment status
+      const isDeployed = await dagClient.isDeployed();
+      console.log("📦 Is Smart Account Deployed:", isDeployed);
+
+      // Get balance
+      const balance = await dagClient.getBalance();
+      console.log("💰 Balance:", balance.toString(), "wei");
+
+      if (balance === 0n) {
+        console.warn(
+          `⚠️ Warning: Smart account has 0 balance. Fund it at: ${smartAccountAddress}`
+        );
+      }
+
+      return {
+        signerAddress,
+        smartAccountAddress,
+        isDeployed,
+        balance,
+        dagClient,
+        turnkeySigner,
+      };
+    } catch (error: any) {
+      console.error("❌ Error creating smart account:", error);
+
+      // Better error messages
+      if (error.message?.includes("createPrivateKeysResultV2")) {
+        throw new Error(
+          "Failed to create private key. This usually means:\n" +
+            "1. The sub-organization ID is incorrect\n" +
+            "2. The API key doesn't have permission to access this sub-org\n" +
+            "3. The sub-organization doesn't exist yet"
+        );
+      }
+
+      if (error.message?.includes("API key")) {
+        throw new Error(
+          "Invalid Turnkey API credentials. Check your PUBLIC_KEY and PRIVATE_KEY."
+        );
+      }
+
+      if (error.message?.includes("organization")) {
+        throw new Error(
+          "Invalid organization ID. Make sure you're using the sub-organization ID."
+        );
+      }
+
+      throw error;
     }
   };
 
@@ -188,6 +344,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         contact: email,
         otpType: OtpType.Email,
       });
+
+      console.log("OTP verified successfully:", res);
       return res;
     } catch (error: any) {
       dispatch({ type: "ERROR", payload: error.message });
@@ -209,55 +367,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: "LOADING", payload: true });
 
       try {
-        // const publicKeyCompressed = await indexedDbClient?.getPublicKey();
-        // if (!publicKeyCompressed) {
-        //   throw new Error("No public key found");
-        // }
-
-        // const storedOtpId = getOtpIdFromStorage();
-        // if (!storedOtpId) {
-        //   throw new Error("OTP identifier not found. Please restart sign-in.");
-        // }
-
-        // const authResponse = await authApi.verifyOtp({
-        //   otpId: storedOtpId,
-        //   publicKey: publicKeyCompressed,
-        //   otpCode: credentialBundle,
-        // });
-
-        // const { session, userId, organizationId } = await authApi.otpLogin({
-        //   email: userEmail as Email,
-        //   publicKey: publicKeyCompressed,
-        //   verificationToken: authResponse.verificationToken,
-        // });
-
-        // await indexedDbClient?.loginWithSession(session || "");
-        // removeOtpIdFromStorage();
-
-        // const expiryTime = Date.now() + parseInt(SESSION_EXPIRY) * 1000;
-        // scheduleSessionWarning(expiryTime);
-
-        // setSessionInStorage({
-        //   id: userId,
-        //   name: userEmail,
-        //   email: userEmail,
-        //   organization: {
-        //     organizationId: organizationId,
-        //     organizationName: "",
+        // const res = await completeOtp({
+        //   otpId,
+        //   otpCode: code,
+        //   contact: email,
+        //   otpType: OtpType.Email,
+        //   // optional: create sub-org on first login
+        //   createSubOrgParams: {
+        //     customWallet,
+        //     userEmail: email,
         //   },
         // });
 
-        const res = await completeOtp({
-          otpId,
-          otpCode: code,
-          contact: email,
-          otpType: OtpType.Email,
-          // optional: create sub-org on first login
-          createSubOrgParams: {
-            customWallet,
-            userEmail: email,
-          },
-        });
+        const res = await verifyCode({ otpId, otpCode: code, email });
+
+        await createSmartAccount(res?.subOrganizationId || "");
 
         localStorage.setItem("Session", JSON.stringify(res));
 
@@ -437,6 +561,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("Logging out user");
       const session = localStorage.getItem("Session");
       const sessionToken = JSON.parse(session || "{}").sessionToken;
+      localStorage.removeItem("Session");
       console.log("Session token:", sessionToken);
       await logout(sessionToken);
       navigate("/");
@@ -489,6 +614,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // loginWithApple,
         // loginWithFacebook,
         handleLogout,
+        createSmartAccount,
       }}
     >
       {children}

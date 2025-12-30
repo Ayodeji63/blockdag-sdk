@@ -4,6 +4,7 @@ import {
 } from "@turnkey/react-wallet-kit";
 // import { turnkeyConfig } from "@/config/turnkey";
 import { AuthProvider } from "./auth-provider";
+import { DagClientProvider } from "./dag-provider";
 
 export const Providers: React.FC<{ children: React.ReactNode }> = ({
   children,
