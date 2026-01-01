@@ -1,6 +1,8 @@
 import {
   createContext,
+  Dispatch,
   ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
   useReducer,
@@ -14,7 +16,7 @@ import { AuthClient, Session, SessionType } from "@turnkey/sdk-browser";
 // Remove: import { useTurnkey } from "@turnkey/sdk-react";
 import { OtpType, useTurnkey } from "@turnkey/react-wallet-kit";
 import { WalletType } from "@turnkey/wallet-stamper";
-import { toHex } from "viem";
+import { Address, toHex } from "viem";
 import * as authApi from "@/services/api/auth";
 import {
   getOtpIdFromStorage,
@@ -24,7 +26,9 @@ import {
 } from "@/lib/storage";
 import { customWallet } from "@/config/turnkey";
 import { createApiKeyStamper, createTurnkeySigner } from "@dag-kit/signer";
-import { awakening, createDagAAClient } from "@dag-kit/kit";
+import { awakening, createDagAAClient, parseDAG } from "@dag-kit/kit";
+import { boolean } from "zod";
+
 type Email = string;
 
 interface UserSession {
@@ -79,11 +83,32 @@ interface AuthState {
   sessionExpiring: boolean;
 }
 
+export enum transactionType {
+  NFT = "NFT",
+  TOKEN = "TOKEN",
+}
+
+export interface BatchTransactionType {
+  id: number;
+  name: transactionType;
+  data: any;
+  value: any;
+  target: Address;
+}
+
 const initialState: AuthState = {
   loading: false,
   error: "",
   user: null,
   sessionExpiring: false,
+};
+
+const batchState: BatchTransactionType = {
+  id: 0,
+  name: transactionType.NFT,
+  data: "0x",
+  value: parseDAG("0.1"),
+  target: "0x",
 };
 
 function authReducer(state: AuthState, action: AuthActionType): AuthState {
@@ -110,6 +135,10 @@ function authReducer(state: AuthState, action: AuthActionType): AuthState {
 
 const AuthContext = createContext<{
   state: AuthState;
+  isModalOpen: boolean;
+  address: string;
+  dagClient: any;
+  batchTransaction: any;
   initEmailLogin: (email: Email) => Promise<any>;
   completeEmailAuth: (params: {
     otpId: string;
@@ -124,8 +153,16 @@ const AuthContext = createContext<{
   // loginWithApple: (credential: string) => Promise<void>;
   // loginWithFacebook: (credential: string) => Promise<void>;
   handleLogout: () => Promise<void>;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  setAddress: Dispatch<SetStateAction<string>>;
+  setDagClient: Dispatch<SetStateAction<any>>;
+  setBatchTransaction: Dispatch<SetStateAction<BatchTransactionType[]>>;
 }>({
   state: initialState,
+  isModalOpen: false,
+  address: "",
+  dagClient: "",
+  batchTransaction: batchState,
   initEmailLogin: async () => {},
   completeEmailAuth: async () => {},
   // loginWithPasskey: async () => {},
@@ -136,6 +173,10 @@ const AuthContext = createContext<{
   // loginWithFacebook: async () => {},
   handleLogout: async () => {},
   createSmartAccount: async () => {},
+  setIsModalOpen: () => {},
+  setAddress: () => {},
+  setDagClient: () => {},
+  setBatchTransaction: () => {},
 });
 
 const SESSION_EXPIRY = "900";
@@ -146,6 +187,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const { initOtp, completeOtp, verifyOtp, logout } = useTurnkey();
   const [client, setClient] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [address, setAddress] = useState<string>("");
+  const [dagClient, setDagClient] = useState<any>(null);
+  const [batchTransaction, setBatchTransaction] = useState<
+    BatchTransactionType[]
+  >([]);
 
   const warningTimeoutRef = useRef<NodeJS.Timeout>();
   const [isInitialized, setIsInitialized] = useState(false);
@@ -243,7 +291,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("🔐 Creating Turnkey Signer...");
       const turnkeySigner = createTurnkeySigner({
         chain: awakening.chain_config,
-        rpcUrl: "https://relay.awakening.bdagscan.com",
+        rpcUrl: "https://rpc.awakening.bdagscan.com",
         turnkeyConfig: {
           baseUrl: "https://api.turnkey.com",
           organizationId: PARENT_ORG_ID, // ✅ Use subOrgId here!
@@ -260,9 +308,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Create DAG AA Client
       console.log("🚀 Creating DAG AA Client...");
-      const dagClient = createDagAAClient({
+      const _dagClient = createDagAAClient({
         chain: awakening.chain_config,
-        rpcUrl: "https://relay.awakening.bdagscan.com",
+        rpcUrl: "https://rpc.awakening.bdagscan.com",
         bundlerUrl: "http://localhost:3000",
         paymasterUrl: "http://localhost:3001/rpc",
         factoryAddress: "0x8FaB6DF00085eb05D5F2C1FA46a6E539587ae3f3",
@@ -270,18 +318,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Connect smart account
       console.log("💼 Connecting Smart Account...");
-      const smartAccountAddress = await dagClient.connectSmartAccount({
+      const smartAccountAddress = await _dagClient.connectSmartAccount({
         signer: turnkeySigner,
       });
 
       console.log("✅ Smart Account Address:", smartAccountAddress);
 
       // Check deployment status
-      const isDeployed = await dagClient.isDeployed();
+      const isDeployed = await _dagClient.isDeployed();
       console.log("📦 Is Smart Account Deployed:", isDeployed);
 
       // Get balance
-      const balance = await dagClient.getBalance();
+      const balance = await _dagClient.getBalance();
       console.log("💰 Balance:", balance.toString(), "wei");
 
       if (balance === 0n) {
@@ -290,12 +338,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         );
       }
 
+      setAddress(smartAccountAddress);
+      setDagClient(_dagClient);
       return {
         signerAddress,
         smartAccountAddress,
         isDeployed,
         balance,
-        dagClient,
+        _dagClient,
         turnkeySigner,
       };
     } catch (error: any) {
@@ -385,7 +435,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         localStorage.setItem("Session", JSON.stringify(res));
 
-        navigate("/dashboard");
+        setIsModalOpen(false);
+        // navigate("/dashboard");
 
         return res;
       } catch (error: any) {
@@ -563,6 +614,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const sessionToken = JSON.parse(session || "{}").sessionToken;
       localStorage.removeItem("Session");
       console.log("Session token:", sessionToken);
+      setAddress("");
+      setDagClient(null);
+      // Clear any stored session data
+      localStorage.removeItem("smartAccountAddress");
+      localStorage.removeItem("authToken");
       await logout(sessionToken);
       navigate("/");
     } catch (error) {
@@ -605,8 +661,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         state,
+        isModalOpen,
         initEmailLogin,
         completeEmailAuth,
+        address,
+        dagClient,
+        setDagClient,
+        batchTransaction,
         // loginWithPasskey,
         // loginWithWallet,
         // loginWithOAuth,
@@ -615,6 +676,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // loginWithFacebook,
         handleLogout,
         createSmartAccount,
+        setIsModalOpen,
+        setAddress,
+        setBatchTransaction,
       }}
     >
       {children}

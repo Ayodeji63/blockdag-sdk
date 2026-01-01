@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { X, Mail, Loader2, Chrome } from "lucide-react";
+import { X, Mail, Loader2, Chrome, ChevronDown, ChevronUp } from "lucide-react";
 import { useTurnkey } from "@turnkey/react-wallet-kit";
 import {
   AppleIcon,
@@ -40,6 +40,7 @@ export const AuthModal = ({
   const [step, setStep] = useState("login");
   const [loading, setLoading] = useState(false);
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { initEmailLogin } = useAuth();
   const [init, setInit] = useState("");
   const navigate = useNavigate();
@@ -60,19 +61,9 @@ export const AuthModal = ({
   const handleEmailLogin = async () => {
     setLoadingAction("email");
     try {
-      // await initEmailLogin(email);
-
       const init_ = await initEmailLogin(email);
       setInit(init_);
-      // if (init) {
-      // navigate(
-      //   `/verify-email?id=${encodeURIComponent(init)}&email=${encodeURIComponent(
-      //     email
-      //   )}&type=email`
-      // );
       setStep("verify");
-
-      // }
     } finally {
       setLoadingAction(null);
     }
@@ -115,17 +106,6 @@ export const AuthModal = ({
         });
         navigate("/dashboard");
       } else if (type === "email") {
-        console.log("Completing OTP for email type");
-        // const complete = await completeOtp({
-        //   otpId,
-        //   otpCode: code,
-        //   contact: email,
-        //   otpType: OtpType.Email,
-        //   createSubOrgParams: {
-        //     customWallet,
-        //     userEmail: email,
-        //   },
-        // });
         const params = { otpId: init, code, email };
         await completeEmailAuth(params);
       }
@@ -141,31 +121,54 @@ export const AuthModal = ({
     }
   }, [init, email, code, httpClient, signUpWithPasskey, navigate]);
 
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-end lg:items-center justify-center bg-black/50 lg:p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div
-        className={`relative w-full max-w-md rounded-2xl ${bgColor} shadow-2xl`}
+        className={`relative w-full lg:w-auto lg:min-w-[420px] lg:max-w-md transition-all duration-300 ease-out ${bgColor} shadow-2xl rounded-t-3xl lg:rounded-2xl flex flex-col`}
+        onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile drag handle */}
+        <div
+          className="flex lg:hidden items-center justify-center py-3 cursor-pointer"
+          onClick={toggleExpand}
+        >
+          <div
+            className={`w-10 h-1 rounded-full ${darkMode ? "bg-gray-700" : "bg-gray-300"}`}
+          ></div>
+        </div>
+
+        {/* Close button */}
         <button
           onClick={onClose}
-          className={`absolute right-4 top-4 ${mutedColor} hover:${textColor} transition-colors`}
+          className={`absolute right-4 top-4 z-10 ${mutedColor} hover:${textColor} transition-colors p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800`}
+          aria-label="Close modal"
         >
           <X size={20} />
         </button>
 
         {step === "login" ? (
-          <div className="p-8">
+          <div className="px-6 pb-6 lg:px-8 lg:pb-8 lg:pt-6">
             <div className="mb-6 flex justify-center">
               <BlockDagIcon className="h-12 w-12" />
             </div>
 
             <h2
-              className={`mb-8 text-center text-2xl font-semibold ${textColor}`}
+              className={`mb-6 text-center text-2xl font-semibold ${textColor}`}
             >
               Sign in
             </h2>
 
-            <div className="mb-6">
+            {/* Essential login options - always visible */}
+            <div className="space-y-3 mb-6">
               <div className="relative">
                 <Mail
                   className={`absolute left-3 top-1/2 -translate-y-1/2 ${mutedColor}`}
@@ -176,14 +179,16 @@ export const AuthModal = ({
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleEmailLogin()}
-                  className={`w-full rounded-lg border ${inputBg} ${textColor} py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && isValidEmail && handleEmailLogin()
+                  }
+                  className={`w-full rounded-lg border ${inputBg} ${textColor} py-3 pl-12 pr-4 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow`}
                 />
               </div>
               <button
                 onClick={handleEmailLogin}
                 disabled={!isValidEmail || loading}
-                className={`mt-4 w-full rounded-lg ${buttonBg} py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50`}
+                className={`w-full rounded-lg ${buttonBg} py-3 text-base font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-50`}
               >
                 {loading ? (
                   <Loader2 className="mx-auto animate-spin" size={20} />
@@ -203,96 +208,119 @@ export const AuthModal = ({
             </div>
 
             <button
-              className={`mb-3 w-full rounded-lg border ${borderColor} ${secondaryBg} py-3 font-semibold ${textColor} transition-colors flex items-center justify-center gap-2`}
+              className={`w-full rounded-lg border ${borderColor} ${secondaryBg} py-3 text-base font-semibold ${textColor} transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2`}
             >
               <GoogleIcon />
-              Google
+              Continue with Google
             </button>
 
-            <div className="mb-6 grid grid-cols-4 gap-3">
-              <button
-                className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-colors flex items-center justify-center`}
-              >
-                <FacebookIcon />
-              </button>
-              <button
-                className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-colors flex items-center justify-center`}
-              >
-                <AppleIcon />
-              </button>
-              <button
-                className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-colors flex items-center justify-center`}
-              >
-                <DiscordIcon />
-              </button>
-              <button
-                className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-colors flex items-center justify-center ${textColor}`}
-              >
-                <TwitterIcon />
-              </button>
-            </div>
+            {/* Expandable content */}
+            {isExpanded && (
+              <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="grid grid-cols-4 gap-3">
+                  <button
+                    className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-all hover:scale-105 active:scale-95 flex items-center justify-center`}
+                    aria-label="Sign in with Facebook"
+                  >
+                    <FacebookIcon />
+                  </button>
+                  <button
+                    className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-all hover:scale-105 active:scale-95 flex items-center justify-center`}
+                    aria-label="Sign in with Apple"
+                  >
+                    <AppleIcon />
+                  </button>
+                  <button
+                    className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-all hover:scale-105 active:scale-95 flex items-center justify-center`}
+                    aria-label="Sign in with Discord"
+                  >
+                    <DiscordIcon />
+                  </button>
+                  <button
+                    className={`rounded-lg border ${borderColor} ${secondaryBg} p-3 transition-all hover:scale-105 active:scale-95 flex items-center justify-center ${textColor}`}
+                    aria-label="Sign in with Twitter"
+                  >
+                    <TwitterIcon />
+                  </button>
+                </div>
 
-            <div className="relative my-6">
-              <div className={`absolute inset-0 flex items-center`}>
-                <div className={`w-full border-t ${borderColor}`}></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className={`${bgColor} ${mutedColor} px-2`}>or</span>
-              </div>
-            </div>
+                <div className="relative my-4">
+                  <div className={`absolute inset-0 flex items-center`}>
+                    <div className={`w-full border-t ${borderColor}`}></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className={`${bgColor} ${mutedColor} px-2`}>
+                      or connect wallet
+                    </span>
+                  </div>
+                </div>
 
-            <button
-              className={`mb-3 w-full rounded-lg border ${borderColor} ${secondaryBg} py-3 font-semibold ${textColor} transition-colors`}
-            >
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                <button
+                  className={`w-full rounded-lg border ${borderColor} ${secondaryBg} py-3 text-base font-semibold ${textColor} transition-all hover:scale-[1.02] active:scale-[0.98]`}
                 >
-                  <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
-                  <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
-                  <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
-                </svg>
-                WalletConnect
-              </span>
-            </button>
-            <button
-              className={`w-full rounded-lg border ${borderColor} ${secondaryBg} py-3 font-semibold ${textColor} transition-colors`}
-            >
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                      <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                      <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                    </svg>
+                    WalletConnect
+                  </span>
+                </button>
+                <button
+                  className={`w-full rounded-lg border ${borderColor} ${secondaryBg} py-3 text-base font-semibold ${textColor} transition-all hover:scale-[1.02] active:scale-[0.98]`}
                 >
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M7 7h10M7 12h10M7 17h6" />
-                </svg>
-                More wallets
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <path d="M7 7h10M7 12h10M7 17h6" />
+                    </svg>
+                    More wallets
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {/* Show more/less button */}
+            <button
+              onClick={toggleExpand}
+              className={`w-full mt-4 py-2 text-sm ${mutedColor} hover:${textColor} transition-colors flex items-center justify-center gap-1`}
+            >
+              <span>
+                {isExpanded ? "Less options" : "More sign in options"}
               </span>
+              {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
             <p className={`mt-6 text-center text-xs ${mutedColor}`}>
-              By signing in, you agree to the{" "}
+              By signing in, you agree to our{" "}
               <a href="#" className="text-blue-500 hover:underline">
                 Terms of Service
               </a>
             </p>
             <p className={`mt-2 text-center text-xs ${mutedColor}`}>
-              protected by <span className="font-semibold">BlockDag SDK</span>
+              Protected by <span className="font-semibold">BlockDag SDK</span>
             </p>
           </div>
         ) : (
-          <div className="p-8">
+          <div className="px-6 pb-6 lg:px-8 lg:pb-8 lg:pt-6">
             <button
-              className={`mb-4 ${mutedColor} hover:${textColor} transition-colors`}
+              onClick={() => setStep("login")}
+              className={`mb-6 ${mutedColor} hover:${textColor} transition-colors text-sm flex items-center gap-1`}
             >
               ← Back
             </button>
@@ -304,57 +332,48 @@ export const AuthModal = ({
             <h2
               className={`mb-2 text-center text-2xl font-semibold ${textColor}`}
             >
-              Please verify your email
+              Verify your email
             </h2>
             <p className={`mb-8 text-center text-sm ${mutedColor}`}>
               Enter the 6-digit code sent to{" "}
               <span className="font-semibold">{email}</span>
             </p>
 
-            <div className="mb-6 flex justify-center gap-2">
-              <CardContent className="space-y-6">
-                <div className="flex justify-center">
-                  <InputOTP maxLength={6} value={code} onChange={setCode}>
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                    </InputOTPGroup>
-                    <InputOTPSeparator />
-                    <InputOTPGroup>
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
+            <div className="mb-6">
+              <div className="flex justify-center mb-6">
+                <InputOTP maxLength={6} value={code} onChange={setCode}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
 
-                <LoadingButton
-                  className="font-semibold w-full rounded-lg ${buttonBg} py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={!isSixDigits || submitting}
-                  loading={submitting}
-                  onClick={handleVerify}
-                >
-                  Verify and continue
-                </LoadingButton>
-              </CardContent>
+              <LoadingButton
+                className={`w-full rounded-lg ${buttonBg} py-3 text-base font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-50`}
+                disabled={!isSixDigits || submitting}
+                loading={submitting}
+                onClick={handleVerify}
+              >
+                Verify and continue
+              </LoadingButton>
             </div>
-            {/* 
-            <button
-              onClick={handleVerify}
-              disabled={loading}
-              className={`w-full rounded-lg ${buttonBg} py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50`}
-            >
-              {loading ? (
-                <Loader2 className="mx-auto animate-spin" size={20} />
-              ) : (
-                "Verify and continue"
-              )}
-            </button> */}
 
-            <p className={`mt-4 text-center text-sm ${mutedColor}`}>
+            <p className={`text-center text-sm ${mutedColor}`}>
               Didn't receive the code?{" "}
-              <button className="text-blue-500 hover:underline">Resend</button>
+              <button
+                className="text-blue-500 hover:underline font-medium"
+                onClick={handleEmailLogin}
+              >
+                Resend
+              </button>
             </p>
           </div>
         )}

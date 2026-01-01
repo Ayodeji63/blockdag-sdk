@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3001;
 const PAYMASTER_ADDRESS = process.env.PAYMASTER_ADDRESS as Address;
 const PAYMASTER_PRIVATE_KEY = process.env
   .PAYMASTER_PRIVATE_KEY as `0x${string}`;
-const RPC_URL = process.env.RPC_URL || "https://relay.awakening.bdagscan.com";
+const RPC_URL = process.env.RPC_URL || "https://rpc.awakening.bdagscan.com";
 const CHAIN_ID = parseInt(process.env.CHAIN_ID || "1");
 
 if (!PAYMASTER_ADDRESS) {
