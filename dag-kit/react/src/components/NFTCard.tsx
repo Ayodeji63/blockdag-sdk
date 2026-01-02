@@ -40,7 +40,6 @@ const NFTCard = ({ nft, onMint }: NFTCardProps) => {
         abi: nftAbi,
         functionName: "safeMint",
         args: [address, nft.image || ""],
-        value: parseDAG(nft.price),
       });
 
       console.log("✅ Transaction Hash:", hash);
