@@ -506,6 +506,7 @@ app.post("/fund", async (req, res) => {
       abi: paymasterAbi,
       functionName: "deposit",
       value: BigInt(amount) * BigInt(1e18),
+      chain: undefined,
     });
 
     res.json({ hash, message: "Paymaster funded successfully" });
